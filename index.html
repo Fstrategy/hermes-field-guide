@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hermes Agent — A Field Guide to Eight Powers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f1e6cd;
+    --parchment-deep: #ead9b6;
+    --ink: #1c1611;
+    --ink-soft: #4a3d2e;
+    --ink-faded: #7a6a55;
+    --oxblood: #7a1f1f;
+    --teal: #1f4a4a;
+    --mustard: #b8862c;
+    --leaf: #4a5d2f;
+    --rule: #3a2e22;
+    --paper-shadow: 0 1px 0 rgba(28, 22, 17, 0.08), 0 14px 40px -20px rgba(28, 22, 17, 0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: "Fraunces", Georgia, serif;
+    font-variation-settings: "opsz" 14, "SOFT" 30;
+    font-weight: 400;
+    line-height: 1.6;
+    font-size: 17px;
+    background-image:
+      radial-gradient(ellipse 1200px 600px at 50% -200px, rgba(184, 134, 44, 0.18), transparent 70%),
+      radial-gradient(ellipse 800px 600px at 90% 90%, rgba(122, 31, 31, 0.08), transparent 70%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.11  0 0 0 0 0.09  0 0 0 0 0.07  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  ::selection { background: var(--mustard); color: var(--ink); }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 80px 56px 120px;
+  }
+
+  /* ======= MASTHEAD ======= */
+  .masthead {
+    border-top: 4px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 36px 0 24px;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .masthead::before {
+    content: "";
+    position: absolute;
+    top: 14px; left: 0; right: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .folio-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  h1.title {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "wght" 400;
+    font-style: italic;
+    font-size: clamp(58px, 9vw, 112px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--ink);
+    text-align: center;
+  }
+  h1.title .ampersand {
+    font-style: italic;
+    color: var(--oxblood);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 300;
+    font-size: 1.15em;
+    margin: 0 0.06em;
+  }
+  h1.title .small-cap {
+    display: block;
+    font-size: 0.18em;
+    letter-spacing: 0.4em;
+    font-style: normal;
+    font-variation-settings: "opsz" 14, "SOFT" 0, "wght" 600;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+
+  .deck {
+    text-align: center;
+    margin: 26px auto 0;
+    max-width: 720px;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 19px;
+    line-height: 1.5;
+    font-variation-settings: "opsz" 18, "SOFT" 50;
+  }
+
+  .deck .marker {
+    color: var(--oxblood);
+    font-style: normal;
+  }
+
+  /* ======= ORNAMENTS ======= */
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--ink-soft);
+    margin: 56px 0;
+  }
+  .ornament .line { flex: 1; height: 1px; background: var(--rule); opacity: 0.4; }
+  .ornament svg { width: 36px; height: 18px; }
+
+  /* ======= TL;DR STRIP ======= */
+  .preamble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    margin-bottom: 64px;
+    align-items: start;
+  }
+
+  .preamble .lede {
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .preamble .lede .drop-cap {
+    float: left;
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 700;
+    font-size: 88px;
+    line-height: 0.85;
+    margin: 6px 12px -6px 0;
+    color: var(--oxblood);
+  }
+  .preamble .lede em {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .glance {
+    background: var(--parchment-deep);
+    border: 1px solid var(--rule);
+    padding: 22px 26px;
+    box-shadow: var(--paper-shadow);
+    position: relative;
+  }
+  .glance::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(28, 22, 17, 0.2);
+    pointer-events: none;
+  }
+  .glance h2 {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    font-weight: 500;
+  }
+  .glance ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: chip;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 18px;
+  }
+  .glance ol li {
+    counter-increment: chip;
+    font-size: 15px;
+    line-height: 1.35;
+    padding-left: 28px;
+    position: relative;
+  }
+  .glance ol li::before {
+    content: counter(chip, upper-roman);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 14, "SOFT" 80, "wght" 500;
+    font-size: 13px;
+    color: var(--oxblood);
+    letter-spacing: 0.04em;
+  }
+  .glance ol li b {
+    font-weight: 600;
+    font-variation-settings: "opsz" 14, "SOFT" 30, "wght" 600;
+  }
+  .glance ol li a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .glance ol li a:hover {
+    border-bottom-color: var(--oxblood);
+  }
+
+  /* ======= COMPASS / DECISION TREE ======= */
+  .compass {
+    margin: 0 0 80px;
+    text-align: center;
+  }
+  .compass-frame {
+    border: 1px solid var(--rule);
+    background: rgba(234, 217, 182, 0.4);
+    padding: 36px 28px 28px;
+    position: relative;
+  }
+  .compass-frame::before, .compass-frame::after {
+    content: "❦";
+    position: absolute;
+    font-size: 18px;
+    color: var(--oxblood);
+    top: -13px;
+    background: var(--parchment);
+    padding: 0 8px;
+  }
+  .compass-frame::before { left: 32px; }
+  .compass-frame::after { right: 32px; }
+
+  .compass h2 {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 60, "SOFT" 50, "wght" 500;
+    font-size: 32px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .compass h2 .question-mark {
+    color: var(--oxblood);
+  }
+  .compass .compass-sub {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+  .compass svg.tree {
+    width: 100%;
+    max-width: 980px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ======= ENTRIES ======= */
+  .entries { display: flex; flex-direction: column; gap: 0; }
+
+  .entry {
+    border-top: 1px solid var(--rule);
+    padding: 56px 0;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .entry:last-of-type { border-bottom: 1px solid var(--rule); }
+
+  .entry-numeral {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 400;
+    font-size: 96px;
+    line-height: 0.85;
+    color: var(--oxblood);
+    text-align: center;
+    position: sticky;
+    top: 24px;
+  }
+  .entry-numeral .pip {
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--ink-soft);
+    margin: 18px auto 8px;
+  }
+  .entry-numeral .label {
+    display: block;
+    font-style: normal;
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .entry-body h3 {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 60, "SOFT" 30, "wght" 500;
+    font-size: 38px;
+    line-height: 1.05;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .entry-body h3 .latin {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-soft);
+    font-size: 22px;
+    margin-left: 12px;
+    font-variation-settings: "opsz" 24, "SOFT" 80, "wght" 400;
+  }
+  .entry-body .tagline {
+    font-style: italic;
+    color: var(--oxblood);
+    font-size: 19px;
+    margin: 0 0 22px;
+    font-variation-settings: "opsz" 18, "SOFT" 100, "wght" 400;
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+
+  .entry-prose p {
+    margin: 0 0 14px;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .entry-prose p:last-child { margin-bottom: 0; }
+  .entry-prose strong {
+    font-weight: 600;
+    font-variation-settings: "opsz" 14, "SOFT" 30, "wght" 600;
+  }
+  .entry-prose .pull {
+    color: var(--teal);
+    font-style: italic;
+  }
+
+  .when-box {
+    border: 1px solid var(--rule);
+    padding: 16px 20px;
+    margin-top: 22px;
+    background: rgba(184, 134, 44, 0.10);
+  }
+  .when-box dt {
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--leaf);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .when-box dt.warn { color: var(--oxblood); }
+  .when-box dd {
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .when-box dd:last-child { margin-bottom: 0; }
+
+  .practical-guide {
+    margin-top: 30px;
+    border: 1px solid var(--rule);
+    background: rgba(31, 74, 74, 0.07);
+    padding: 24px 26px;
+    box-shadow: var(--paper-shadow);
+  }
+  .practical-guide h4 {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 36, "SOFT" 50, "wght" 500;
+    font-size: 26px;
+    line-height: 1.18;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .practical-guide .guide-lede {
+    margin: 0 0 18px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .guide-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin: 18px 0;
+  }
+  .guide-grid h5 {
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin: 0 0 6px;
+    font-weight: 500;
+  }
+  .guide-grid p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .guide-checklist {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 22px;
+  }
+  .guide-checklist li {
+    font-size: 15px;
+    line-height: 1.58;
+    position: relative;
+    padding-left: 22px;
+  }
+  .guide-checklist li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+  }
+
+  .reader-bridge {
+    margin-top: 28px;
+    border: 1px solid rgba(28, 22, 17, 0.55);
+    padding: 18px 20px;
+    background: rgba(184, 134, 44, 0.08);
+  }
+  .reader-bridge h5 {
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+  .reader-bridge p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.68;
+  }
+  .reader-bridge code {
+    font-size: 0.92em;
+  }
+  [data-zh-only][hidden] {
+    display: none !important;
+  }
+
+  .hook-story {
+    border: 1px solid var(--rule);
+    background: rgba(255, 252, 245, 0.55);
+    padding: 16px;
+  }
+  .hook-story h5 {
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin: 0 0 10px;
+    font-weight: 500;
+  }
+  .hook-flow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
+  .hook-step {
+    border: 1px solid rgba(28, 22, 17, 0.6);
+    background: var(--parchment-deep);
+    min-height: 86px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .hook-step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--oxblood);
+    font-family: "DM Mono", monospace;
+    z-index: 1;
+  }
+  .hook-step b {
+    color: var(--ink);
+    font-size: 14px;
+  }
+  .hook-step span {
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+  .hook-step.is-guard { background: rgba(122, 31, 31, 0.12); }
+  .hook-step.is-inject { background: rgba(31, 74, 74, 0.13); }
+  .hook-step.is-done { background: rgba(184, 134, 44, 0.18); }
+
+  .choose-paths {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--rule);
+    background: rgba(234, 217, 182, 0.5);
+  }
+  .choose-path {
+    padding: 18px;
+    border-right: 1px solid rgba(28, 22, 17, 0.18);
+  }
+  .choose-path:last-child { border-right: none; }
+  .choose-path h3 {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 80, "wght" 500;
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: var(--oxblood);
+  }
+  .choose-path p {
+    font-size: 15px;
+    line-height: 1.58;
+    margin: 0 0 10px;
+  }
+  .choose-path .try {
+    display: block;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--teal);
+  }
+  body[data-lang="zh"] #hooks .hook-pipeline-original {
+    display: none;
+  }
+
+  .visual {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .codeblock {
+    background: var(--ink);
+    color: #f1e6cd;
+    border-radius: 0;
+    padding: 18px 20px;
+    font-family: "DM Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-left: 4px solid var(--mustard);
+    position: relative;
+  }
+  .codeblock::before {
+    content: attr(data-label);
+    display: inline-block;
+    background: var(--ink);
+    color: var(--mustard);
+    padding: 2px 10px;
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--mustard);
+    margin-bottom: 12px;
+  }
+  .codeblock .c-cmt { color: #b8a382; font-style: italic; }
+  .codeblock .c-key { color: #e8a868; }
+  .codeblock .c-str { color: #d4c896; }
+  .codeblock .c-prompt { color: #c89b3c; user-select: none; }
+
+  .diagram {
+    border: 1px solid var(--rule);
+    padding: 18px;
+    background: rgba(255, 252, 245, 0.5);
+    position: relative;
+  }
+  .diagram svg { width: 100%; height: auto; display: block; }
+  .diagram .caption {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 14, "SOFT" 80, "wght" 400;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* ======= COMPARISON TABLE ======= */
+  .comparison-section {
+    margin-top: 96px;
+    padding-top: 56px;
+    border-top: 4px double var(--rule);
+  }
+  .comparison-section h2 {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 60, "SOFT" 50, "wght" 500;
+    font-size: 42px;
+    margin: 0 0 6px;
+    text-align: center;
+  }
+  .comparison-section .sub {
+    text-align: center;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 17px;
+    margin-bottom: 36px;
+  }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--parchment-deep);
+    border: 1px solid var(--rule);
+  }
+  table.compare th, table.compare td {
+    padding: 14px 16px;
+    text-align: left;
+    border-right: 1px solid rgba(28, 22, 17, 0.15);
+    border-bottom: 1px solid rgba(28, 22, 17, 0.15);
+    vertical-align: top;
+  }
+  table.compare th:last-child, table.compare td:last-child { border-right: none; }
+  table.compare thead th {
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  table.compare tbody th {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 18, "SOFT" 80, "wght" 500;
+    font-size: 16px;
+    color: var(--oxblood);
+    background: rgba(184, 134, 44, 0.12);
+    width: 22%;
+  }
+  table.compare tbody td { line-height: 1.5; }
+  table.compare tbody tr:last-child th,
+  table.compare tbody tr:last-child td { border-bottom: none; }
+  table.compare em { color: var(--ink-soft); }
+
+  /* ======= COLOPHON ======= */
+  .colophon {
+    margin-top: 96px;
+    padding-top: 36px;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .colophon h3 {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+  .colophon ul { list-style: none; margin: 0; padding: 0; }
+  .colophon ul li { margin-bottom: 6px; }
+  .colophon a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--ink-faded);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .colophon a:hover { color: var(--oxblood); border-bottom-style: solid; border-bottom-color: var(--oxblood); }
+
+  .colophon .meta {
+    font-style: italic;
+  }
+  .colophon .meta p { margin: 0 0 10px; }
+
+  /* ======= LANGUAGE SWITCHER ======= */
+  body[data-lang="zh"] {
+    font-family: "Fraunces", "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+    line-height: 1.72;
+  }
+  body[data-lang="zh"] .deck,
+  body[data-lang="zh"] .entry-prose p,
+  body[data-lang="zh"] .when-box dd,
+  body[data-lang="zh"] table.compare tbody td,
+  body[data-lang="zh"] .colophon {
+    line-height: 1.72;
+  }
+
+  .language-switcher {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 20;
+    display: inline-flex;
+    gap: 0;
+    padding: 3px;
+    background: rgba(241, 230, 205, 0.92);
+    border: 1px solid var(--rule);
+    box-shadow: var(--paper-shadow);
+    backdrop-filter: blur(8px);
+  }
+  .language-switcher::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(28, 22, 17, 0.18);
+    pointer-events: none;
+  }
+  .lang-btn {
+    border: 0;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    min-width: 44px;
+    position: relative;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  .lang-btn:hover {
+    color: var(--oxblood);
+  }
+  .lang-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--parchment);
+  }
+
+  /* ======= ANIMATIONS ======= */
+  @keyframes drift {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .masthead, .preamble, .compass, .entry, .comparison-section, .colophon {
+    animation: drift 0.7s ease-out backwards;
+  }
+  .preamble { animation-delay: 0.1s; }
+  .compass { animation-delay: 0.2s; }
+  .entry:nth-of-type(1) { animation-delay: 0.25s; }
+  .entry:nth-of-type(2) { animation-delay: 0.3s; }
+  .entry:nth-of-type(3) { animation-delay: 0.35s; }
+  .entry:nth-of-type(4) { animation-delay: 0.4s; }
+
+  /* SVG path animations */
+  .tree path.flow {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 2s ease-out 0.6s forwards;
+  }
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ======= RESPONSIVE ======= */
+  @media (max-width: 880px) {
+    .page { padding: 48px 24px 80px; }
+    .language-switcher { top: 10px; right: 10px; }
+    .lang-btn { min-width: 38px; padding: 7px 8px; }
+    h1.title { font-size: 56px; }
+    .preamble { grid-template-columns: 1fr; gap: 32px; }
+    .glance ol { grid-template-columns: 1fr; }
+    .entry { grid-template-columns: 1fr; gap: 0; padding: 40px 0; }
+    .entry-numeral { position: static; font-size: 64px; text-align: left; margin-bottom: 14px; }
+    .entry-numeral .pip { margin: 10px 0 6px; }
+    .entry-grid { grid-template-columns: 1fr; gap: 24px; }
+    .entry-body h3 { font-size: 28px; }
+    .entry-body h3 .latin { display: block; margin-left: 0; margin-top: 4px; font-size: 16px; }
+    .guide-grid, .guide-checklist, .hook-flow, .choose-paths { grid-template-columns: 1fr; }
+    .hook-step:not(:last-child)::after { display: none; }
+    .choose-path { border-right: none; border-bottom: 1px solid rgba(28, 22, 17, 0.18); }
+    .choose-path:last-child { border-bottom: none; }
+    .compass-frame { padding: 28px 16px 20px; }
+    .colophon { grid-template-columns: 1fr; gap: 28px; }
+    table.compare { font-size: 13px; }
+    table.compare th, table.compare td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<nav class="language-switcher" aria-label="Language">
+  <button type="button" class="lang-btn" data-lang-option="en" aria-pressed="true">EN</button>
+  <button type="button" class="lang-btn" data-lang-option="zh" aria-pressed="false">中文</button>
+</nav>
+<div class="page">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="folio-row">
+      <span>Vol. I &mdash; First Edition</span>
+      <span>Nous Research</span>
+      <span>For the Newly Arrived</span>
+    </div>
+    <h1 class="title">
+      Hermes <span class="ampersand">&amp;</span> the Eight Powers
+      <span class="small-cap">A Field Guide for First-Time Travelers</span>
+    </h1>
+    <p class="deck">
+      Eight features, mapped &amp; named, so you can <span class="marker">choose the right one in under a minute</span>
+      and stop wondering whether you needed cron, delegation, or kanban.
+    </p>
+  </header>
+
+  <!-- ============ PREAMBLE ============ -->
+  <section class="preamble">
+    <div class="lede">
+      <p><span class="drop-cap">H</span>ermes is an agent that does work for you &mdash; but the question every newcomer hits is the same: <em>which lever do I pull?</em> Schedule something? Spawn helpers? Set a goal and walk away? The eight features in this guide each answer a different version of <em>"how should this work get done?"</em> &mdash; and once you can name them, the docs stop feeling like a maze.</p>
+      <p>Each entry below tells you, in roughly the order you'd ask: what it is, when to reach for it, when to <em>not</em>, and the smallest example that does something useful.</p>
+    </div>
+    <aside class="glance">
+      <h2>At a glance &mdash; jump in</h2>
+      <ol>
+        <li><b><a href="#cron">Cron</a></b> &mdash; do it on a schedule</li>
+        <li><b><a href="#delegation">Delegation</a></b> &mdash; spawn helpers, now</li>
+        <li><b><a href="#kanban">Kanban</a></b> &mdash; a board many agents share</li>
+        <li><b><a href="#kanban-tutorial">Kanban Stories</a></b> &mdash; four worked examples</li>
+        <li><b><a href="#goals">Goals</a></b> &mdash; don't stop till done</li>
+        <li><b><a href="#code-exec">Code Execution</a></b> &mdash; one script, many tools</li>
+        <li><b><a href="#hooks">Hooks</a></b> &mdash; react to events</li>
+        <li><b><a href="#batch">Batch</a></b> &mdash; thousands of prompts at once</li>
+      </ol>
+    </aside>
+  </section>
+
+  <!-- ============ COMPASS / DECISION TREE ============ -->
+  <section class="compass">
+    <div class="compass-frame">
+      <h2>What do you want Hermes to do<span class="question-mark">?</span></h2>
+      <div class="compass-sub">A Map of Intentions &mdash; Follow the Lines</div>
+      <svg class="tree" viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" aria-label="Decision diagram mapping user intent to features">
+        <defs>
+          <style>
+            .node-bg { fill: #f1e6cd; stroke: #1c1611; stroke-width: 1.2; }
+            .node-bg-accent { fill: #ead9b6; stroke: #7a1f1f; stroke-width: 1.5; }
+            .node-text { font-family: "Fraunces", serif; font-size: 14px; fill: #1c1611; font-style: italic; font-weight: 500; }
+            .node-text-tight { font-family: "Fraunces", serif; font-size: 13px; fill: #1c1611; font-style: italic; }
+            .feature-text { font-family: "DM Mono", monospace; font-size: 11px; fill: #7a1f1f; font-weight: 500; letter-spacing: 0.08em; }
+            .question-text { font-family: "DM Mono", monospace; font-size: 10px; fill: #4a3d2e; letter-spacing: 0.12em; text-transform: uppercase; }
+            .flow { fill: none; stroke: #4a3d2e; stroke-width: 1.4; stroke-dasharray: 4 3; }
+            .flow-solid { fill: none; stroke: #7a1f1f; stroke-width: 1.6; }
+          </style>
+        </defs>
+
+        <!-- root -->
+        <ellipse cx="480" cy="46" rx="160" ry="28" class="node-bg-accent"/>
+        <text x="480" y="44" text-anchor="middle" class="node-text">A task needs doing</text>
+        <text x="480" y="60" text-anchor="middle" class="question-text">START HERE</text>
+
+        <!-- four branches: time? parallelism? persistence? observation? -->
+        <!-- branch labels -->
+        <text x="160" y="110" text-anchor="middle" class="question-text">when?</text>
+        <text x="380" y="110" text-anchor="middle" class="question-text">how many?</text>
+        <text x="600" y="110" text-anchor="middle" class="question-text">how long?</text>
+        <text x="820" y="110" text-anchor="middle" class="question-text">how observed?</text>
+
+        <!-- root connectors -->
+        <path class="flow" d="M 420 60 Q 280 90 160 130"/>
+        <path class="flow" d="M 450 70 Q 380 90 380 130"/>
+        <path class="flow" d="M 510 70 Q 580 90 600 130"/>
+        <path class="flow" d="M 540 60 Q 700 90 820 130"/>
+
+        <!-- second level questions -->
+        <rect x="60" y="130" width="200" height="42" rx="2" class="node-bg"/>
+        <text x="160" y="148" text-anchor="middle" class="node-text-tight">later? on a schedule?</text>
+        <text x="160" y="164" text-anchor="middle" class="node-text-tight">in fresh sessions?</text>
+
+        <rect x="280" y="130" width="200" height="42" rx="2" class="node-bg"/>
+        <text x="380" y="148" text-anchor="middle" class="node-text-tight">a few right now,</text>
+        <text x="380" y="164" text-anchor="middle" class="node-text-tight">in parallel?</text>
+
+        <rect x="500" y="130" width="200" height="42" rx="2" class="node-bg"/>
+        <text x="600" y="148" text-anchor="middle" class="node-text-tight">work that survives</text>
+        <text x="600" y="164" text-anchor="middle" class="node-text-tight">restarts &amp; humans?</text>
+
+        <rect x="720" y="130" width="200" height="42" rx="2" class="node-bg"/>
+        <text x="820" y="148" text-anchor="middle" class="node-text-tight">react to lifecycle</text>
+        <text x="820" y="164" text-anchor="middle" class="node-text-tight">events?</text>
+
+        <!-- third level -->
+        <path class="flow" d="M 160 172 L 160 210"/>
+        <path class="flow" d="M 380 172 L 380 210"/>
+        <path class="flow" d="M 600 172 L 600 210"/>
+        <path class="flow" d="M 820 172 L 820 210"/>
+
+        <!-- third row: more nuanced sub-questions -->
+        <rect x="80" y="210" width="160" height="32" rx="2" class="node-bg"/>
+        <text x="160" y="231" text-anchor="middle" class="node-text-tight">recurring or one-shot</text>
+
+        <rect x="300" y="210" width="160" height="32" rx="2" class="node-bg"/>
+        <text x="380" y="231" text-anchor="middle" class="node-text-tight">isolated &amp; ephemeral</text>
+
+        <rect x="520" y="210" width="160" height="32" rx="2" class="node-bg"/>
+        <text x="600" y="231" text-anchor="middle" class="node-text-tight">named, shared board</text>
+
+        <rect x="740" y="210" width="160" height="32" rx="2" class="node-bg"/>
+        <text x="820" y="231" text-anchor="middle" class="node-text-tight">tool / message / startup</text>
+
+        <!-- arrows to features (level 4) -->
+        <path class="flow-solid" d="M 160 242 L 160 300"/>
+        <path class="flow-solid" d="M 380 242 L 380 300"/>
+        <path class="flow-solid" d="M 600 242 L 600 300"/>
+        <path class="flow-solid" d="M 820 242 L 820 300"/>
+
+        <!-- features row 1 -->
+        <ellipse cx="160" cy="320" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="160" y="324" text-anchor="middle" class="feature-text">I &middot; CRON</text>
+
+        <ellipse cx="380" cy="320" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="380" y="324" text-anchor="middle" class="feature-text">II &middot; DELEGATION</text>
+
+        <ellipse cx="600" cy="320" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="600" y="324" text-anchor="middle" class="feature-text">III &middot; KANBAN</text>
+
+        <ellipse cx="820" cy="320" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="820" y="324" text-anchor="middle" class="feature-text">VII &middot; HOOKS</text>
+
+        <!-- second cluster - bottom row -->
+        <text x="160" y="392" text-anchor="middle" class="question-text">keep going?</text>
+        <text x="380" y="392" text-anchor="middle" class="question-text">tool chains?</text>
+        <text x="820" y="392" text-anchor="middle" class="question-text">at scale?</text>
+
+        <rect x="80" y="408" width="160" height="42" rx="2" class="node-bg"/>
+        <text x="160" y="426" text-anchor="middle" class="node-text-tight">don't stop until</text>
+        <text x="160" y="442" text-anchor="middle" class="node-text-tight">a goal is met</text>
+
+        <rect x="300" y="408" width="160" height="42" rx="2" class="node-bg"/>
+        <text x="380" y="426" text-anchor="middle" class="node-text-tight">3+ tool calls in</text>
+        <text x="380" y="442" text-anchor="middle" class="node-text-tight">one Python script</text>
+
+        <rect x="740" y="408" width="160" height="42" rx="2" class="node-bg"/>
+        <text x="820" y="426" text-anchor="middle" class="node-text-tight">thousands of prompts</text>
+        <text x="820" y="442" text-anchor="middle" class="node-text-tight">in parallel</text>
+
+        <!-- arrows -->
+        <path class="flow-solid" d="M 160 450 L 160 488"/>
+        <path class="flow-solid" d="M 380 450 L 380 488"/>
+        <path class="flow-solid" d="M 820 450 L 820 488"/>
+
+        <ellipse cx="160" cy="508" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="160" y="512" text-anchor="middle" class="feature-text">V &middot; GOALS</text>
+
+        <ellipse cx="380" cy="508" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="380" y="512" text-anchor="middle" class="feature-text">VI &middot; CODE EXEC</text>
+
+        <ellipse cx="820" cy="508" rx="92" ry="22" class="node-bg-accent"/>
+        <text x="820" y="512" text-anchor="middle" class="feature-text">VIII &middot; BATCH</text>
+
+        <!-- corner ornaments -->
+        <text x="40" y="540" font-family="Fraunces" font-size="14" fill="#7a1f1f" font-style="italic">N</text>
+        <text x="920" y="540" font-family="Fraunces" font-size="14" fill="#7a1f1f" font-style="italic">S</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ ENTRIES ============ -->
+  <section class="entries">
+
+    <!-- I. CRON -->
+    <article class="entry" id="cron">
+      <div class="entry-numeral">I<span class="pip"></span><span class="label">Schedule</span></div>
+      <div class="entry-body">
+        <h3>Scheduled Tasks <span class="latin">a.k.a. Cron</span></h3>
+        <p class="tagline">"Set it. Forget it. Trust the tick."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>Tells Hermes <strong>do this later</strong> &mdash; once, hourly, every Sunday at 9, whatever. The gateway daemon ticks every 60 seconds and runs anything that's due in a fresh agent session, then delivers the result wherever you said (chat, file, Telegram, Discord, email&hellip;).</p>
+            <p>Three ways to schedule: a relative delay (<code>30m</code>), an interval (<code>every 2h</code>), or a full cron expression (<code>0 9 * * 1-5</code>). You can also just <em>ask Hermes in plain English</em> &mdash; "every morning at 9, summarize Hacker News and DM me on Telegram" &mdash; and it'll wire up the cron job for you.</p>
+            <p class="pull">First-timer pitfall: cron runs in a <em>fresh</em> session with zero memory of your last chat. Whatever the agent needs to know, the prompt has to say.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>You want recurring or future-scheduled work &mdash; daily briefs, hourly polls, "remind me in 30 minutes."</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>You need the result <em>now</em> in this conversation. Use the agent normally.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="One line, in chat">
+<span class="c-prompt">/cron add</span> <span class="c-str">"every 1h" "Summarize new feed items"</span> <span class="c-key">--skill</span> blogwatcher
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .clock-face { fill: #f1e6cd; stroke: #1c1611; stroke-width: 1.5; }
+                    .clock-mark { stroke: #1c1611; stroke-width: 1; }
+                    .clock-hand { stroke: #7a1f1f; stroke-width: 2; stroke-linecap: round; }
+                    .arrow { fill: none; stroke: #4a3d2e; stroke-width: 1.2; }
+                    .small-l { font-family: "DM Mono", monospace; font-size: 9px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .pulse { animation: tick 4s ease-in-out infinite; transform-origin: 80px 100px; }
+                  </style>
+                  <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a3d2e"/>
+                  </marker>
+                </defs>
+                <!-- clock -->
+                <circle cx="80" cy="100" r="55" class="clock-face"/>
+                <line x1="80" y1="50" x2="80" y2="56" class="clock-mark"/>
+                <line x1="80" y1="144" x2="80" y2="150" class="clock-mark"/>
+                <line x1="30" y1="100" x2="36" y2="100" class="clock-mark"/>
+                <line x1="124" y1="100" x2="130" y2="100" class="clock-mark"/>
+                <g class="pulse">
+                  <line x1="80" y1="100" x2="80" y2="65" class="clock-hand"/>
+                  <line x1="80" y1="100" x2="108" y2="100" class="clock-hand" stroke-width="1.5"/>
+                </g>
+                <circle cx="80" cy="100" r="3" fill="#7a1f1f"/>
+                <text x="80" y="178" text-anchor="middle" class="small-l">TICK &middot; 60s</text>
+                <!-- arrow -->
+                <path d="M 145 100 L 200 100" class="arrow" marker-end="url(#arr1)"/>
+                <!-- session -->
+                <rect x="210" y="70" width="100" height="60" fill="#ead9b6" stroke="#1c1611" stroke-width="1.2"/>
+                <text x="260" y="92" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#1c1611">fresh</text>
+                <text x="260" y="108" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#1c1611">agent</text>
+                <text x="260" y="124" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#7a1f1f">session</text>
+                <text x="260" y="148" text-anchor="middle" class="small-l">RUNS PROMPT</text>
+                <!-- delivery -->
+                <path d="M 260 135 L 260 168" class="arrow" marker-end="url(#arr1)"/>
+                <text x="260" y="185" text-anchor="middle" font-family="Fraunces" font-size="11" font-style="italic" fill="#1f4a4a">→ chat / file / Slack / email</text>
+                <style>
+                  @keyframes tick {
+                    0%, 100% { transform: rotate(0deg); }
+                    50% { transform: rotate(180deg); }
+                  }
+                </style>
+              </svg>
+              <div class="caption">A daemon ticks; due jobs spawn fresh sessions; output goes where you asked.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- II. DELEGATION -->
+    <article class="entry" id="delegation">
+      <div class="entry-numeral">II<span class="pip"></span><span class="label">Helpers</span></div>
+      <div class="entry-body">
+        <h3>Subagent Delegation <span class="latin">a.k.a. delegate_task</span></h3>
+        <p class="tagline">"Many hands &mdash; one mind to read the report."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>Lets the main agent <strong>spawn child agents</strong> to do work in parallel, each with a fresh isolated context and a restricted toolset. Up to 3 children at once by default. Only their final summaries come back &mdash; intermediate noise stays out of your context.</p>
+            <p>Think <em>fork &amp; join</em>: the parent blocks until every child returns, then continues. Children know <strong>nothing</strong> the parent knows unless the parent passes it explicitly via the <code>context</code> field.</p>
+            <p class="pull">Crucial distinction: <em>delegation is synchronous and ephemeral</em>. If the user interrupts the parent, every child dies and their work is discarded. For durable work, use Cron or Kanban.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>You need 3 research questions answered in parallel, want to refactor a big codebase without flooding context, or want to delegate cheaper subtasks to a smaller model.</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>The work has to survive interrupts, needs human input, or might be picked up by another role.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="From the agent itself">
+<span class="c-key">delegate_task</span>(tasks=[
+  {<span class="c-str">"goal"</span>: <span class="c-str">"Research WebAssembly 2025"</span>, <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+  {<span class="c-str">"goal"</span>: <span class="c-str">"Research RISC-V 2025"</span>,    <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+  {<span class="c-str">"goal"</span>: <span class="c-str">"Research quantum 2025"</span>,    <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+])
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .parent { fill: #7a1f1f; stroke: #1c1611; }
+                    .child { fill: #ead9b6; stroke: #1c1611; }
+                    .lbl { font-family: "Fraunces", serif; font-size: 12px; font-style: italic; }
+                    .lbl-mini { font-family: "DM Mono", monospace; font-size: 9px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .conn { fill: none; stroke: #4a3d2e; stroke-width: 1.2; }
+                  </style>
+                </defs>
+                <!-- parent -->
+                <rect x="120" y="20" width="80" height="38" class="parent"/>
+                <text x="160" y="44" text-anchor="middle" class="lbl" fill="#f1e6cd">parent</text>
+                <text x="160" y="14" text-anchor="middle" class="lbl-mini">YOUR AGENT</text>
+
+                <!-- fan out -->
+                <path d="M 140 58 Q 80 90 50 110" class="conn"/>
+                <path d="M 160 58 L 160 110" class="conn"/>
+                <path d="M 180 58 Q 240 90 270 110" class="conn"/>
+
+                <!-- children -->
+                <rect x="20" y="110" width="60" height="40" class="child"/>
+                <text x="50" y="135" text-anchor="middle" class="lbl">child 1</text>
+
+                <rect x="130" y="110" width="60" height="40" class="child"/>
+                <text x="160" y="135" text-anchor="middle" class="lbl">child 2</text>
+
+                <rect x="240" y="110" width="60" height="40" class="child"/>
+                <text x="270" y="135" text-anchor="middle" class="lbl">child 3</text>
+
+                <text x="160" y="172" text-anchor="middle" class="lbl-mini">PARALLEL · ISOLATED · FRESH CONTEXT</text>
+
+                <!-- join arrows -->
+                <path d="M 50 150 Q 80 170 140 180" class="conn"/>
+                <path d="M 160 150 L 160 180" class="conn"/>
+                <path d="M 270 150 Q 240 170 180 180" class="conn"/>
+
+                <text x="160" y="195" text-anchor="middle" class="lbl" fill="#1f4a4a">→ summaries return to parent</text>
+              </svg>
+              <div class="caption">Fork into N isolated children, join their summaries.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- III. KANBAN -->
+    <article class="entry" id="kanban">
+      <div class="entry-numeral">III<span class="pip"></span><span class="label">Board</span></div>
+      <div class="entry-body">
+        <h3>Kanban <span class="latin">a.k.a. multi-agent task board</span></h3>
+        <p class="tagline">"A board your agents share &mdash; with rows that survive everything."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>A durable SQLite-backed task board where multiple <strong>named profiles</strong> (researcher, reviewer, writer, deploy-bot) collaborate over time. Tasks have status, dependencies, comments, retries, and a full audit trail. The dispatcher inside the gateway claims ready tasks and spawns whichever profile owns them.</p>
+            <p>Where delegation is a function call, kanban is a <em>work queue</em>: every handoff is a row, humans can comment or unblock at any point, and a crashed worker gets reclaimed and retried instead of losing its task.</p>
+            <p>Open the dashboard (<code>hermes dashboard</code> &rarr; Kanban tab) and you get a Linear-style drag-and-drop board with columns for Triage / Todo / Ready / Running / Blocked / Done.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>Work crosses agent boundaries, needs to survive restarts, might need human input, or you have <em>fleet</em> work (one specialist + 50 subjects).</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>You just want the parent agent to think about three things in parallel and merge results &mdash; that's delegation's job.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="From your shell">
+<span class="c-prompt">$</span> hermes kanban init
+<span class="c-prompt">$</span> hermes gateway start
+<span class="c-prompt">$</span> hermes kanban create <span class="c-str">"research AI funding"</span> \
+    <span class="c-key">--assignee</span> researcher
+<span class="c-prompt">$</span> hermes kanban watch  <span class="c-cmt"># live event stream</span>
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .col { fill: #ead9b6; stroke: #1c1611; stroke-width: 1; }
+                    .card { fill: #f1e6cd; stroke: #4a3d2e; stroke-width: 0.8; }
+                    .card-done { fill: #c89b3c; stroke: #1c1611; opacity: 0.7; }
+                    .card-run { fill: #1f4a4a; stroke: #1c1611; }
+                    .h { font-family: "DM Mono", monospace; font-size: 8px; fill: #1c1611; letter-spacing: 0.08em; font-weight: 500; }
+                    .ct { font-family: "Fraunces", serif; font-size: 9px; fill: #1c1611; font-style: italic; }
+                    .ct-light { font-family: "Fraunces", serif; font-size: 9px; fill: #f1e6cd; font-style: italic; }
+                  </style>
+                </defs>
+                <!-- columns -->
+                <g>
+                  <rect x="10" y="10" width="58" height="180" class="col"/>
+                  <text x="39" y="24" text-anchor="middle" class="h">TODO</text>
+                  <rect x="14" y="32" width="50" height="22" class="card"/>
+                  <text x="39" y="46" text-anchor="middle" class="ct">spec API</text>
+                  <rect x="14" y="58" width="50" height="22" class="card"/>
+                  <text x="39" y="72" text-anchor="middle" class="ct">draft post</text>
+                </g>
+                <g>
+                  <rect x="78" y="10" width="58" height="180" class="col"/>
+                  <text x="107" y="24" text-anchor="middle" class="h">READY</text>
+                  <rect x="82" y="32" width="50" height="22" class="card"/>
+                  <text x="107" y="46" text-anchor="middle" class="ct">review PR</text>
+                </g>
+                <g>
+                  <rect x="146" y="10" width="58" height="180" class="col"/>
+                  <text x="175" y="24" text-anchor="middle" class="h">RUNNING</text>
+                  <rect x="150" y="32" width="50" height="22" class="card-run"/>
+                  <text x="175" y="46" text-anchor="middle" class="ct-light">build</text>
+                  <rect x="150" y="58" width="50" height="22" class="card-run"/>
+                  <text x="175" y="72" text-anchor="middle" class="ct-light">translate</text>
+                </g>
+                <g>
+                  <rect x="214" y="10" width="58" height="180" class="col"/>
+                  <text x="243" y="24" text-anchor="middle" class="h">BLOCKED</text>
+                  <rect x="218" y="32" width="50" height="22" class="card" fill="#7a1f1f"/>
+                  <text x="243" y="46" text-anchor="middle" class="ct-light">deploy ⚠</text>
+                </g>
+                <g>
+                  <rect x="282" y="10" width="28" height="180" class="col"/>
+                  <text x="296" y="24" text-anchor="middle" class="h" transform="rotate(-90 296 24)">DONE</text>
+                  <rect x="285" y="40" width="22" height="20" class="card-done"/>
+                  <rect x="285" y="64" width="22" height="20" class="card-done"/>
+                  <rect x="285" y="88" width="22" height="20" class="card-done"/>
+                  <rect x="285" y="112" width="22" height="20" class="card-done"/>
+                </g>
+              </svg>
+              <div class="caption">Six columns. Real handoffs. Real audit log.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- IV. KANBAN TUTORIAL -->
+    <article class="entry" id="kanban-tutorial">
+      <div class="entry-numeral">IV<span class="pip"></span><span class="label">Stories</span></div>
+      <div class="entry-body">
+        <h3>Kanban Stories <span class="latin">a.k.a. four worked examples</span></h3>
+        <p class="tagline">"See it in motion before you commit."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>The companion tutorial walks four <strong>real shapes of work</strong> with dashboard screenshots:</p>
+            <p><strong>① Solo dev shipping a feature</strong> &mdash; three linked tasks (schema → API → tests), each handing off structured <code>--summary</code> + <code>--metadata</code> so the next worker doesn't re-read a design doc.</p>
+            <p><strong>② Fleet farming</strong> &mdash; one translator profile, one transcriber profile, one copywriter, all draining their queues in parallel while you sleep.</p>
+            <p><strong>③ Role pipeline with retry</strong> &mdash; PM writes spec, engineer implements, reviewer rejects, engineer iterates, reviewer approves. Retry history is preserved, so the second attempt sees why the first failed.</p>
+            <p><strong>④ Crash &amp; circuit breaker</strong> &mdash; worker OOM-kills, dispatcher detects the dead PID, requeues. After N consecutive spawn-failures the breaker trips and the task auto-blocks.</p>
+            <p class="pull">If you're new, this is the page that makes Kanban click. The reference page tells you <em>what</em>; the stories show you <em>why</em>.</p>
+            <dl class="when-box">
+              <dt>Read it when</dt>
+              <dd>You skimmed the Kanban reference and aren't sure when you'd actually pick it over a TODO list. The story comparing flat-todo vs. retry-aware runs is the moment of clarity.</dd>
+            </dl>
+            <div class="reader-bridge" data-zh-only hidden>
+              <h5>先把这些英文当成“角色和交接单”</h5>
+              <p><strong>schema</strong> 是数据库结构，<strong>API</strong> 是接口，<strong>tests</strong> 是测试；<strong>summary</strong> 是交接摘要，<strong>metadata</strong> 是结构化附加信息；<strong>worker</strong> 是真正接任务干活的 agent；<strong>profile</strong> 是这个 agent 的身份配置，比如 researcher（研究员）、writer（写作者）、reviewer（评审者）。</p>
+            </div>
+          </div>
+          <div class="visual">
+            <div class="diagram">
+              <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .stage-box { fill: #f1e6cd; stroke: #1c1611; stroke-width: 1.2; }
+                    .stage-done { fill: #4a5d2f; stroke: #1c1611; }
+                    .stage-block { fill: #7a1f1f; stroke: #1c1611; }
+                    .stage-active { fill: #c89b3c; stroke: #1c1611; }
+                    .lbl { font-family: "Fraunces", serif; font-size: 10px; font-style: italic; }
+                    .lbl-light { fill: #f1e6cd; }
+                    .lbl-tiny { font-family: "DM Mono", monospace; font-size: 8px; fill: #4a3d2e; letter-spacing: 0.08em; }
+                    .conn-arrow { fill: none; stroke: #4a3d2e; stroke-width: 1.2; }
+                  </style>
+                  <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a3d2e"/>
+                  </marker>
+                </defs>
+                <text x="160" y="14" text-anchor="middle" class="lbl-tiny">STORY ③ &middot; ROLE PIPELINE WITH RETRY</text>
+                <!-- spec -->
+                <rect x="20" y="30" width="70" height="36" class="stage-done"/>
+                <text x="55" y="46" text-anchor="middle" class="lbl lbl-light">spec</text>
+                <text x="55" y="60" text-anchor="middle" class="lbl lbl-light">@pm</text>
+                <text x="55" y="78" text-anchor="middle" class="lbl-tiny">DONE</text>
+                <!-- arrow -->
+                <path d="M 90 48 L 124 48" class="conn-arrow" marker-end="url(#arr2)"/>
+                <!-- impl with retry -->
+                <rect x="125" y="30" width="70" height="36" class="stage-done"/>
+                <text x="160" y="46" text-anchor="middle" class="lbl lbl-light">impl</text>
+                <text x="160" y="60" text-anchor="middle" class="lbl lbl-light">@eng</text>
+                <text x="160" y="78" text-anchor="middle" class="lbl-tiny">DONE (run 2)</text>
+
+                <!-- retry visualization underneath -->
+                <rect x="125" y="100" width="70" height="26" class="stage-block"/>
+                <text x="160" y="116" text-anchor="middle" class="lbl lbl-light">run 1</text>
+                <text x="160" y="138" text-anchor="middle" class="lbl-tiny">BLOCKED</text>
+                <text x="160" y="150" text-anchor="middle" class="lbl-tiny">"missing strength check"</text>
+
+                <rect x="125" y="170" width="70" height="26" class="stage-done"/>
+                <text x="160" y="186" text-anchor="middle" class="lbl lbl-light">run 2</text>
+                <text x="160" y="208" text-anchor="middle" class="lbl-tiny">COMPLETED</text>
+
+                <path d="M 160 126 Q 195 145 160 170" class="conn-arrow" marker-end="url(#arr2)" stroke="#7a1f1f" stroke-dasharray="2 2"/>
+
+                <!-- review -->
+                <path d="M 195 48 L 229 48" class="conn-arrow" marker-end="url(#arr2)"/>
+                <rect x="230" y="30" width="70" height="36" class="stage-active"/>
+                <text x="265" y="46" text-anchor="middle" class="lbl">review</text>
+                <text x="265" y="60" text-anchor="middle" class="lbl">@rev</text>
+                <text x="265" y="78" text-anchor="middle" class="lbl-tiny">READY</text>
+              </svg>
+              <div class="caption">Story ③: every retry is a row. The next attempt reads the prior block reason.</div>
+            </div>
+          </div>
+        </div>
+        <div class="practical-guide" data-zh-only hidden>
+          <h4>实操指引：聊天不会自动进看板</h4>
+          <p class="guide-lede">Kanban 不是“所有会话的后台列表”。普通聊天默认仍然只是聊天；只有你明确把某件事建成看板任务，或让一个编排 agent 创建任务，它才会进入看板。</p>
+          <div class="guide-grid">
+            <div>
+              <h5>一 · 什么时候进看板</h5>
+              <p>当你希望一件事离开当前对话、被某个 profile 接手、跨重启继续、留下交接记录，或之后还能在 dashboard 里追踪，就把它建成 Kanban task。一次性问答、临时改一句文案、马上要结果的任务，不需要进看板。</p>
+            </div>
+            <div>
+              <h5>二 · 三个入口</h5>
+              <p><strong>人手动建</strong>：CLI、<code>/kanban</code>、dashboard。<strong>聊天里明确要求</strong>：“把这件事放进 Kanban，拆给 researcher/writer/reviewer”。<strong>自动化建</strong>：cron、webhook 或 orchestrator 用 <code>kanban_create</code> 创建任务。</p>
+            </div>
+            <div>
+              <h5>三 · 正确心智模型</h5>
+              <p>你负责创建、评论、解除阻塞和看 dashboard；dispatcher 负责认领 ready 任务；worker 启动后用 <code>kanban_show</code>、<code>kanban_complete</code>、<code>kanban_block</code> 读写任务。普通聊天不会自动拥有这些 worker 工具。</p>
+            </div>
+          </div>
+          <div class="codeblock" data-label="从聊天习惯过渡">
+<span class="c-cmt"># 普通聊天：不进看板，结果回到当前对话</span>
+帮我看看这个 API 设计有没有明显问题。
+
+<span class="c-cmt"># 明确进入看板：先建任务，再由 dispatcher 派给 profile</span>
+把“整理本周 AI 融资新闻并写成简报”放进 Kanban。
+拆成 researcher → analyst → writer 三步，
+每一步都写清 summary 和 metadata，最后在 dashboard 里可追踪。
+
+<span class="c-cmt"># 适合客制化：固定角色、技能、项目隔离、重复任务</span>
+以后所有“周报”都进入 ops-weekly board，
+assignee 用 analyst，附加 news-harvester skill，
+用 idempotency key 避免同一天重复创建。
+          </div>
+          <div class="codeblock" data-label="人手动建任务">
+<span class="c-prompt">$</span> hermes kanban init
+<span class="c-prompt">$</span> hermes gateway start
+<span class="c-prompt">$</span> hermes dashboard  <span class="c-cmt"># 打开 Kanban 标签页</span>
+
+<span class="c-prompt">$</span> SCHEMA=$(hermes kanban create <span class="c-str">"设计 auth schema"</span> \
+    <span class="c-key">--assignee</span> backend-dev <span class="c-key">--tenant</span> auth-project \
+    <span class="c-key">--priority</span> 2 <span class="c-key">--json</span> | jq -r .id)
+
+<span class="c-prompt">$</span> API=$(hermes kanban create <span class="c-str">"实现 auth API endpoints"</span> \
+    <span class="c-key">--assignee</span> backend-dev <span class="c-key">--tenant</span> auth-project \
+    <span class="c-key">--parent</span> $SCHEMA <span class="c-key">--json</span> | jq -r .id)
+
+<span class="c-prompt">$</span> hermes kanban create <span class="c-str">"写 auth 集成测试"</span> \
+    <span class="c-key">--assignee</span> qa-dev <span class="c-key">--tenant</span> auth-project \
+    <span class="c-key">--parent</span> $API
+
+<span class="c-prompt">$</span> hermes kanban watch  <span class="c-cmt"># 看实时事件流；也可点 Nudge dispatcher 立刻触发一轮调度</span>
+          </div>
+          <ul class="guide-checklist">
+            <li><strong>不自动进入</strong>：普通 <code>hermes chat</code> 不会把每轮对话塞进 Kanban，也不会默认暴露 <code>kanban_*</code> 工具。</li>
+            <li><strong>最顺手的用法</strong>：聊天时发现“这事要持续追踪”，就明确说“建成 Kanban task”，并指定 assignee、done 标准和是否要拆子任务。</li>
+            <li><strong>状态这样读</strong>：<strong>Triage</strong> 是想法停车场，<strong>Todo</strong> 常在等 parent，<strong>Ready</strong> 才会被 dispatcher 认领，<strong>Blocked</strong> 等你补信息或解除阻塞。</li>
+            <li><strong>客制化抓手</strong>：用 board 分项目，用 tenant 分客户/业务线，用 profile 分角色，用 skills 补专长，用 idempotency key 让自动化不重复建同一天的任务。</li>
+            <li><strong>交接质量</strong>：完成时写清 <code>summary</code>，把文件、决策、测试结果放进 <code>metadata</code>，下一个 worker 才不用重读长文档。</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- V. GOALS -->
+    <article class="entry" id="goals">
+      <div class="entry-numeral">V<span class="pip"></span><span class="label">Persist</span></div>
+      <div class="entry-body">
+        <h3>Persistent Goals <span class="latin">a.k.a. /goal</span></h3>
+        <p class="tagline">"Don't stop until it's done &mdash; and stop saying <em>'keep going'</em>."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>You hand Hermes a goal that <strong>survives across turns</strong>. After every turn, a tiny judge model decides "done?" or "continue?" If continue, Hermes auto-feeds itself a continuation prompt and works again &mdash; up to 20 turns by default before pausing for you to <code>/goal resume</code>.</p>
+            <p>This is Hermes' take on the <em>Ralph loop</em> pattern. Use it for tasks where you'd otherwise be sitting there saying "keep going" three times: lint sweeps, multi-file ports, "investigate this drift bug and write a report."</p>
+            <p>User messages always preempt the loop &mdash; type something and it pauses. <code>/goal pause</code>, <code>/goal resume</code>, <code>/goal clear</code>, <code>/goal status</code> are the levers.</p>
+            <p class="pull">The judge is deliberately conservative: it only marks a goal done when the response <em>explicitly</em> confirms the work, the deliverable is clearly produced, or the goal is unachievable.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>The job is iterative and well-defined: "fix every failing test in <code>tests/foo/</code> until <code>scripts/run_tests.sh</code> passes."</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>The agent normally finishes in one turn. Goals are for tasks that need self-driven iteration.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="In any session">
+<span class="c-prompt">/goal</span> Fix every lint error in src/ and verify
+       <span class="c-str">ruff check</span> passes
+<span class="c-cmt"># → ⊙ Goal set (20-turn budget)</span>
+<span class="c-cmt"># → turn 1 runs, judge says continue</span>
+<span class="c-cmt"># → ↻ Continuing toward goal (1/20)</span>
+<span class="c-cmt"># → ✓ Goal achieved</span>
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .loop-box { fill: #f1e6cd; stroke: #1c1611; stroke-width: 1.2; }
+                    .judge-box { fill: #c89b3c; stroke: #1c1611; }
+                    .lbl { font-family: "Fraunces", serif; font-size: 12px; font-style: italic; fill: #1c1611; }
+                    .lbl-tiny { font-family: "DM Mono", monospace; font-size: 9px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .arrow { fill: none; stroke: #4a3d2e; stroke-width: 1.2; }
+                  </style>
+                  <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a3d2e"/>
+                  </marker>
+                </defs>
+                <text x="160" y="16" text-anchor="middle" class="lbl-tiny">THE GOAL LOOP</text>
+
+                <!-- agent turn -->
+                <rect x="40" y="50" width="100" height="40" class="loop-box"/>
+                <text x="90" y="68" text-anchor="middle" class="lbl">agent turn</text>
+                <text x="90" y="84" text-anchor="middle" class="lbl-tiny">DOES THE WORK</text>
+
+                <!-- arrow to judge -->
+                <path d="M 140 70 L 178 70" class="arrow" marker-end="url(#arr3)"/>
+
+                <!-- judge -->
+                <rect x="180" y="50" width="100" height="40" class="judge-box"/>
+                <text x="230" y="68" text-anchor="middle" class="lbl">judge</text>
+                <text x="230" y="84" text-anchor="middle" class="lbl-tiny">DONE? CONTINUE?</text>
+
+                <!-- continue arrow loops back -->
+                <path d="M 230 90 Q 230 140 90 140 Q 90 100 90 90" class="arrow" marker-end="url(#arr3)"/>
+                <text x="160" y="158" text-anchor="middle" class="lbl-tiny">↻ continue → fresh continuation prompt</text>
+
+                <!-- done arrow goes off -->
+                <path d="M 280 70 L 308 70" class="arrow" marker-end="url(#arr3)"/>
+                <text x="294" y="58" text-anchor="middle" class="lbl-tiny">✓</text>
+                <text x="294" y="86" text-anchor="middle" class="lbl-tiny">DONE</text>
+
+                <!-- budget bar -->
+                <rect x="40" y="180" width="240" height="8" fill="#ead9b6" stroke="#1c1611"/>
+                <rect x="40" y="180" width="60" height="8" fill="#7a1f1f"/>
+                <text x="40" y="178" class="lbl-tiny">20-turn budget · pauses if hit</text>
+              </svg>
+              <div class="caption">Loop, judge, repeat &mdash; until done or the budget runs out.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- VI. CODE EXEC -->
+    <article class="entry" id="code-exec">
+      <div class="entry-numeral">VI<span class="pip"></span><span class="label">Script</span></div>
+      <div class="entry-body">
+        <h3>Code Execution <span class="latin">a.k.a. execute_code</span></h3>
+        <p class="tagline">"One Python script. Many tools. One LLM turn."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>Hermes can write a <strong>Python script that calls Hermes tools</strong> &mdash; <code>web_search</code>, <code>read_file</code>, <code>patch</code>, <code>terminal</code>, <code>search_files</code>&hellip; &mdash; programmatically, with normal Python flow control between calls. The script runs in a sandboxed child process and only its <code>print()</code> output comes back.</p>
+            <p>Why this matters: in a normal multi-tool workflow, every intermediate result enters the LLM context. With <code>execute_code</code>, you can loop over 50 search results, filter, fetch, summarize &mdash; and the LLM only sees the final summary. <em>Massive token savings on tool-heavy work.</em></p>
+            <p class="pull">The agent decides on its own when to use this. It picks <code>execute_code</code> when there are 3+ tool calls with logic between them (loops, filters, conditionals).</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>Mechanical pipelines &mdash; "find every file with X, read each, extract Y, count and report." (Or just trust the agent to pick it.)</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>The work needs reasoning between steps &mdash; that's what delegation is for. Also: Linux/macOS only (uses Unix domain sockets).</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="What the agent writes">
+<span class="c-cmt"># intermediate results never enter the context</span>
+<span class="c-key">from</span> hermes_tools <span class="c-key">import</span> web_search, web_extract
+
+results = web_search(<span class="c-str">"Rust async runtimes"</span>, limit=<span class="c-str">5</span>)
+summaries = []
+<span class="c-key">for</span> r <span class="c-key">in</span> results[<span class="c-str">"data"</span>][<span class="c-str">"web"</span>]:
+    page = web_extract([r[<span class="c-str">"url"</span>]])
+    <span class="c-cmt"># filter, summarize…</span>
+    summaries.append(...)
+
+print(json.dumps(summaries))  <span class="c-cmt"># ← only this returns</span>
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .lbl { font-family: "Fraunces", serif; font-size: 11px; font-style: italic; fill: #1c1611; }
+                    .lbl-tiny { font-family: "DM Mono", monospace; font-size: 9px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .lbl-mono { font-family: "DM Mono", monospace; font-size: 10px; fill: #1c1611; }
+                    .arrow { fill: none; stroke: #4a3d2e; stroke-width: 1.2; }
+                    .arrow-thin { fill: none; stroke: #4a3d2e; stroke-width: 0.8; stroke-dasharray: 3 2; }
+                  </style>
+                  <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a3d2e"/>
+                  </marker>
+                </defs>
+                <text x="160" y="14" text-anchor="middle" class="lbl-tiny">CONTEXT-EFFICIENT TOOL CHAINS</text>
+
+                <!-- LLM turn -->
+                <rect x="20" y="40" width="80" height="36" fill="#7a1f1f" stroke="#1c1611"/>
+                <text x="60" y="62" text-anchor="middle" class="lbl" fill="#f1e6cd">LLM turn</text>
+
+                <path d="M 100 58 L 134 58" class="arrow" marker-end="url(#arr4)"/>
+                <text x="117" y="50" text-anchor="middle" class="lbl-tiny">writes</text>
+
+                <!-- script box -->
+                <rect x="135" y="30" width="100" height="120" fill="#f1e6cd" stroke="#1c1611" stroke-width="1.2"/>
+                <text x="185" y="46" text-anchor="middle" class="lbl-tiny">PYTHON SCRIPT</text>
+                <text x="185" y="62" text-anchor="middle" class="lbl-mono">web_search(...)</text>
+                <text x="185" y="78" text-anchor="middle" class="lbl-mono">for r in results:</text>
+                <text x="185" y="94" text-anchor="middle" class="lbl-mono">  web_extract(r)</text>
+                <text x="185" y="110" text-anchor="middle" class="lbl-mono">  filter / sum…</text>
+                <text x="185" y="130" text-anchor="middle" class="lbl-mono" fill="#7a1f1f">print(final)</text>
+
+                <!-- side: tools via socket -->
+                <text x="280" y="50" text-anchor="middle" class="lbl-tiny">VIA</text>
+                <text x="280" y="62" text-anchor="middle" class="lbl-tiny">UNIX</text>
+                <text x="280" y="74" text-anchor="middle" class="lbl-tiny">SOCKET</text>
+                <path d="M 235 70 Q 260 70 270 80" class="arrow-thin"/>
+                <path d="M 235 90 Q 260 90 270 90" class="arrow-thin"/>
+                <path d="M 235 110 Q 260 110 270 100" class="arrow-thin"/>
+
+                <!-- back to LLM, only print -->
+                <path d="M 185 150 Q 60 175 60 80" class="arrow" marker-end="url(#arr4)"/>
+                <text x="120" y="172" text-anchor="middle" class="lbl-tiny" fill="#7a1f1f">ONLY print() RETURNS</text>
+              </svg>
+              <div class="caption">All the tool noise stays out of context.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- VII. HOOKS -->
+    <article class="entry" id="hooks">
+      <div class="entry-numeral">VII<span class="pip"></span><span class="label">React</span></div>
+      <div class="entry-body">
+        <h3>Event Hooks <span class="latin">a.k.a. listen, block, inject</span></h3>
+        <p class="tagline">"Run your code at the moments that matter."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>Three hook flavors let you wedge custom logic into agent lifecycle: <strong>Gateway hooks</strong> (Python handlers that fire on Telegram/Slack/Discord events), <strong>Plugin hooks</strong> (Python, fire in CLI <em>and</em> gateway), and <strong>Shell hooks</strong> (drop-in shell scripts declared in <code>config.yaml</code>).</p>
+            <p>Three things hooks can do, in increasing power:</p>
+            <p>① <strong>Observe</strong> &mdash; log every tool call, count subagent runs, ping Telegram when a long task crosses 10 steps.<br>
+            ② <strong>Block</strong> &mdash; <code>pre_tool_call</code> can veto a dangerous shell command before it runs (e.g. forbid <code>rm&nbsp;-rf&nbsp;/</code>).<br>
+            ③ <strong>Inject</strong> &mdash; <code>pre_llm_call</code> can prepend context to the user's message every turn (memory recall, "today is Friday," current <code>git status</code>).</p>
+            <p class="pull">A famous community pattern: drop a <code>~/.hermes/BOOT.md</code> with natural-language startup instructions, wire a hook on <code>gateway:startup</code>, and Hermes runs your checklist on every boot.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>You want auditing, guardrails, auto-formatting after writes, RAG-style context injection, or a startup ritual.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="Shell hook in config.yaml">
+<span class="c-key">hooks</span>:
+  pre_tool_call:
+    - matcher: <span class="c-str">"terminal"</span>
+      command: <span class="c-str">"~/.hermes/agent-hooks/block-rm.sh"</span>
+  post_tool_call:
+    - matcher: <span class="c-str">"write_file|patch"</span>
+      command: <span class="c-str">"~/.hermes/agent-hooks/auto-format.sh"</span>
+  pre_llm_call:
+    - command: <span class="c-str">"~/.hermes/agent-hooks/inject-git-status.sh"</span>
+            </div>
+            <div class="diagram hook-pipeline-original">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .lbl { font-family: "Fraunces", serif; font-size: 11px; font-style: italic; fill: #1c1611; }
+                    .lbl-tiny { font-family: "DM Mono", monospace; font-size: 8px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .pipe { fill: none; stroke: #1c1611; stroke-width: 2; }
+                    .hook { fill: #c89b3c; stroke: #1c1611; }
+                    .hook-block { fill: #7a1f1f; stroke: #1c1611; }
+                    .hook-inject { fill: #1f4a4a; stroke: #1c1611; }
+                  </style>
+                </defs>
+                <text x="160" y="16" text-anchor="middle" class="lbl-tiny">THE AGENT TURN PIPELINE</text>
+
+                <!-- main pipe -->
+                <line x1="20" y1="100" x2="300" y2="100" class="pipe"/>
+
+                <!-- markers along pipe -->
+                <circle cx="40" cy="100" r="4" fill="#1c1611"/>
+                <circle cx="100" cy="100" r="4" fill="#1c1611"/>
+                <circle cx="160" cy="100" r="4" fill="#1c1611"/>
+                <circle cx="220" cy="100" r="4" fill="#1c1611"/>
+                <circle cx="280" cy="100" r="4" fill="#1c1611"/>
+
+                <text x="40" y="120" text-anchor="middle" class="lbl-tiny">USER MSG</text>
+                <text x="100" y="120" text-anchor="middle" class="lbl-tiny">PRE_LLM</text>
+                <text x="160" y="120" text-anchor="middle" class="lbl-tiny">PRE_TOOL</text>
+                <text x="220" y="120" text-anchor="middle" class="lbl-tiny">POST_TOOL</text>
+                <text x="280" y="120" text-anchor="middle" class="lbl-tiny">POST_LLM</text>
+
+                <!-- inject hook -->
+                <rect x="80" y="48" width="40" height="30" class="hook-inject"/>
+                <text x="100" y="63" text-anchor="middle" class="lbl" fill="#f1e6cd">inject</text>
+                <text x="100" y="75" text-anchor="middle" class="lbl-tiny" fill="#f1e6cd">CTX</text>
+                <line x1="100" y1="78" x2="100" y2="96" stroke="#1f4a4a" stroke-width="1.5"/>
+
+                <!-- block hook -->
+                <rect x="140" y="48" width="40" height="30" class="hook-block"/>
+                <text x="160" y="68" text-anchor="middle" class="lbl" fill="#f1e6cd">block</text>
+                <line x1="160" y1="78" x2="160" y2="96" stroke="#7a1f1f" stroke-width="1.5"/>
+
+                <!-- observe hooks -->
+                <rect x="200" y="148" width="40" height="30" class="hook"/>
+                <text x="220" y="168" text-anchor="middle" class="lbl">log</text>
+                <line x1="220" y1="148" x2="220" y2="104" stroke="#c89b3c" stroke-width="1.5"/>
+
+                <rect x="260" y="148" width="40" height="30" class="hook"/>
+                <text x="280" y="168" text-anchor="middle" class="lbl">log</text>
+                <line x1="280" y1="148" x2="280" y2="104" stroke="#c89b3c" stroke-width="1.5"/>
+
+                <text x="160" y="34" text-anchor="middle" class="lbl-tiny">↑ INJECT &amp; BLOCK</text>
+                <text x="160" y="194" text-anchor="middle" class="lbl-tiny">↓ OBSERVE</text>
+              </svg>
+              <div class="caption">Hooks slot into the turn pipeline at named moments.</div>
+            </div>
+            <div class="hook-story" data-zh-only hidden>
+              <h5>一个更像真实使用的画面</h5>
+              <div class="hook-flow">
+                <div class="hook-step">
+                  <b>你发消息</b>
+                  <span>“部署一下并告诉我结果”</span>
+                </div>
+                <div class="hook-step is-inject">
+                  <b>注入上下文</b>
+                  <span>自动带上今天日期、当前分支、最近失败任务</span>
+                </div>
+                <div class="hook-step is-guard">
+                  <b>拦危险动作</b>
+                  <span>遇到删除、覆盖、危险 shell 命令先挡住</span>
+                </div>
+                <div class="hook-step">
+                  <b>做完后整理</b>
+                  <span>写文件后自动格式化、跑测试、记录耗时</span>
+                </div>
+                <div class="hook-step is-done">
+                  <b>只通知重点</b>
+                  <span>失败才发 Slack/Telegram；没事就安静</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="practical-guide" data-zh-only hidden>
+          <h4>Hooks 的 wow 点：让 Hermes 有“反射神经”</h4>
+          <p class="guide-lede">普通用户不需要先理解生命周期。你可以先把它想成：在 agent 做事前、中、后，给它装几个自动反应。</p>
+          <div class="guide-grid">
+            <div>
+              <h5>早晨自动巡检</h5>
+              <p>每次 gateway 启动时读取 <code>~/.hermes/BOOT.md</code>，检查昨夜 cron 有没有失败、部署日志有没有 ERROR；有问题才发消息，没问题就保持安静。</p>
+            </div>
+            <div>
+              <h5>危险动作护栏</h5>
+              <p>在工具真正执行前拦一下：比如禁止 <code>rm -rf</code>、禁止删除生产目录、要求高风险命令先解释原因。它像 agent 的安全带。</p>
+            </div>
+            <div>
+              <h5>写完自动收尾</h5>
+              <p>文件写入后自动格式化、跑测试、把变更摘要记入日志；长任务超过 10 步时提醒你。你不用盯着屏幕等它出声。</p>
+            </div>
+          </div>
+          <div class="reader-bridge">
+            <h5>小白读法</h5>
+            <p><strong>Observe</strong> 就是“旁观并记录”；<strong>Block</strong> 就是“危险时拦住”；<strong>Inject</strong> 就是“每轮开始前塞入必要背景”。它不一定改变你怎么聊天，但会改变 Hermes 做事时的安全感和自动化程度。</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- VIII. BATCH -->
+    <article class="entry" id="batch">
+      <div class="entry-numeral">VIII<span class="pip"></span><span class="label">Scale</span></div>
+      <div class="entry-body">
+        <h3>Batch Processing <span class="latin">a.k.a. batch_runner.py</span></h3>
+        <p class="tagline">"Thousands of prompts. One run. ShareGPT trajectories out."</p>
+        <div class="entry-grid">
+          <div class="entry-prose">
+            <p>Batch processing is the <strong>training-data generation</strong> tool. Feed it a JSONL of prompts, set parallelism, and every prompt gets its own isolated agent session with sampled toolsets. Output is structured ShareGPT-format trajectories with full conversation history, tool stats, and reasoning coverage.</p>
+            <p>Resume is content-aware &mdash; if a run crashes halfway, <code>--resume</code> scans existing batch files, matches completed prompts by their <em>actual text</em>, and only re-runs what's missing. Quality filters drop samples without reasoning and entries with hallucinated tool names.</p>
+            <p>You can pin a per-prompt Docker image (so a "compile this Rust" prompt gets a Rust container) and a per-prompt working directory.</p>
+            <p class="pull">This is for fine-tuning &amp; eval workflows, not for agent users. If you're not training a model, skip it.</p>
+            <dl class="when-box">
+              <dt>Reach for it when</dt>
+              <dd>You're generating tool-use trajectories for fine-tuning, or you want to measure how well a model handles a benchmark of prompts.</dd>
+              <dt class="warn">Don't reach for it when</dt>
+              <dd>You just want the agent to handle one task &mdash; that's just&hellip; using the agent.</dd>
+            </dl>
+          </div>
+          <div class="visual">
+            <div class="codeblock" data-label="From the command line">
+<span class="c-prompt">$</span> python batch_runner.py \
+    <span class="c-key">--dataset_file</span>=data/prompts.jsonl \
+    <span class="c-key">--batch_size</span>=20 \
+    <span class="c-key">--run_name</span>=coding_v1 \
+    <span class="c-key">--num_workers</span>=8 \
+    <span class="c-key">--max_turns</span>=15
+<span class="c-cmt"># → data/coding_v1/trajectories.jsonl</span>
+            </div>
+            <div class="diagram">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <style>
+                    .lbl { font-family: "Fraunces", serif; font-size: 11px; font-style: italic; fill: #1c1611; }
+                    .lbl-tiny { font-family: "DM Mono", monospace; font-size: 9px; fill: #4a3d2e; letter-spacing: 0.1em; }
+                    .prompt { fill: #ead9b6; stroke: #1c1611; }
+                    .worker { fill: #1f4a4a; stroke: #1c1611; }
+                    .out { fill: #c89b3c; stroke: #1c1611; }
+                  </style>
+                </defs>
+                <text x="160" y="14" text-anchor="middle" class="lbl-tiny">JSONL → WORKERS → TRAJECTORIES</text>
+
+                <!-- prompts -->
+                <text x="40" y="34" text-anchor="middle" class="lbl-tiny">PROMPTS</text>
+                <rect x="20" y="44" width="40" height="14" class="prompt"/>
+                <rect x="20" y="62" width="40" height="14" class="prompt"/>
+                <rect x="20" y="80" width="40" height="14" class="prompt"/>
+                <rect x="20" y="98" width="40" height="14" class="prompt"/>
+                <rect x="20" y="116" width="40" height="14" class="prompt"/>
+                <rect x="20" y="134" width="40" height="14" class="prompt"/>
+                <text x="40" y="166" text-anchor="middle" class="lbl-tiny">…1000s</text>
+
+                <!-- workers -->
+                <text x="160" y="34" text-anchor="middle" class="lbl-tiny">N WORKERS</text>
+                <rect x="120" y="60" width="80" height="22" class="worker"/>
+                <text x="160" y="76" text-anchor="middle" class="lbl" fill="#f1e6cd">worker 1</text>
+                <rect x="120" y="86" width="80" height="22" class="worker"/>
+                <text x="160" y="102" text-anchor="middle" class="lbl" fill="#f1e6cd">worker 2</text>
+                <rect x="120" y="112" width="80" height="22" class="worker"/>
+                <text x="160" y="128" text-anchor="middle" class="lbl" fill="#f1e6cd">worker 3</text>
+                <rect x="120" y="138" width="80" height="22" class="worker" opacity="0.5"/>
+                <text x="160" y="154" text-anchor="middle" class="lbl" fill="#f1e6cd">…</text>
+
+                <!-- trajectories out -->
+                <text x="280" y="34" text-anchor="middle" class="lbl-tiny">TRAJECTORIES</text>
+                <rect x="260" y="44" width="40" height="14" class="out"/>
+                <rect x="260" y="62" width="40" height="14" class="out"/>
+                <rect x="260" y="80" width="40" height="14" class="out"/>
+                <rect x="260" y="98" width="40" height="14" class="out"/>
+                <rect x="260" y="116" width="40" height="14" class="out"/>
+                <rect x="260" y="134" width="40" height="14" class="out"/>
+                <text x="280" y="166" text-anchor="middle" class="lbl-tiny">.jsonl</text>
+
+                <!-- arrows -->
+                <line x1="60" y1="95" x2="120" y2="95" stroke="#4a3d2e" stroke-width="1.2"/>
+                <line x1="200" y1="95" x2="260" y2="95" stroke="#4a3d2e" stroke-width="1.2"/>
+
+                <text x="160" y="184" text-anchor="middle" class="lbl-tiny">RESUMABLE · QUALITY-FILTERED · SHAREGPT FORMAT</text>
+              </svg>
+              <div class="caption">For training-data generation &amp; eval workflows.</div>
+            </div>
+          </div>
+        </div>
+        <div class="practical-guide" data-zh-only hidden>
+          <h4>Batch 给谁用：不是“批量聊天”，而是批量造样本</h4>
+          <p class="guide-lede">如果你只是想让 Hermes 做一件事，跳过它没关系。Batch 的价值在于：把同一种任务跑成几百、几千条可复盘的 agent 轨迹，用来训练、评测或找模型短板。</p>
+          <div class="guide-grid">
+            <div>
+              <h5>What · 它是什么</h5>
+              <p>你准备一个 JSONL 文件，每一行是一条 prompt（提示词）。Batch 会给每条 prompt 开一个隔离会话，让多个 worker 并行跑，最后输出 ShareGPT 格式的完整对话轨迹。</p>
+            </div>
+            <div>
+              <h5>Why · 为什么要它</h5>
+              <p>它适合模型团队或评测人员：看模型会不会用工具、哪类题容易失败、推理覆盖够不够。跑崩了可以 <code>--resume</code> 续跑，不用从头再来。</p>
+            </div>
+            <div>
+              <h5>How · 怎么读命令</h5>
+              <p><code>--dataset_file</code> 是题目文件，<code>--num_workers</code> 是并发工人数，<code>--max_turns</code> 是每条题最多跑几轮，<code>--run_name</code> 是这次实验的名字。</p>
+            </div>
+          </div>
+          <div class="reader-bridge">
+            <h5>普通用户怎么判断</h5>
+            <p>你要“处理一个任务”就正常聊天；你要“同一类任务跑一千遍，产出训练/评测数据”，才看 Batch。它不是提高日常效率的第一把钥匙，而是模型研发和质量评测的流水线。</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============ COMPARISON TABLE ============ -->
+  <section class="comparison-section">
+    <h2>The trio that confuses everyone</h2>
+    <p class="sub">Cron vs. Delegation vs. Kanban vs. Goals &mdash; named by what they are, not what they look like.</p>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Cron</th>
+          <th>Delegation</th>
+          <th>Kanban</th>
+          <th>Goals</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Shape</th>
+          <td>Scheduled fire-and-forget</td>
+          <td>Synchronous fork &amp; join</td>
+          <td>Durable queue + state machine</td>
+          <td>Auto-loop on the same session</td>
+        </tr>
+        <tr>
+          <th>When does it run?</th>
+          <td>On a schedule (or future timestamp)</td>
+          <td>Right now, blocks parent</td>
+          <td>When dispatcher claims it (~60s tick)</td>
+          <td>Every turn until done</td>
+        </tr>
+        <tr>
+          <th>Survives restart?</th>
+          <td>✓ &mdash; daemon picks up</td>
+          <td>✗ &mdash; dies with the parent turn</td>
+          <td>✓ &mdash; rows live forever</td>
+          <td>✓ &mdash; persisted in session state</td>
+        </tr>
+        <tr>
+          <th>Human in the loop?</th>
+          <td>Notify only</td>
+          <td>No &mdash; subagents can't ask</td>
+          <td>✓ &mdash; comment, unblock anytime</td>
+          <td>✓ &mdash; user msg always preempts</td>
+        </tr>
+        <tr>
+          <th>Multiple workers?</th>
+          <td>Each job is solo</td>
+          <td>Up to 3 concurrent (configurable)</td>
+          <td>Many named profiles, fleet-able</td>
+          <td>One agent, many turns</td>
+        </tr>
+        <tr>
+          <th>Best for</th>
+          <td>"Every morning at 9, do X."</td>
+          <td>"Research these 3 things in parallel."</td>
+          <td>"Pipeline this work across roles."</td>
+          <td>"Don't stop until all tests pass."</td>
+        </tr>
+        <tr>
+          <th>Reaches for it<br>via</th>
+          <td><code>/cron add</code> or natural language</td>
+          <td>Agent decides via <code>delegate_task</code></td>
+          <td><code>hermes kanban create</code></td>
+          <td><code>/goal &lt;text&gt;</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="choose-paths" data-zh-only hidden>
+      <div class="choose-path">
+        <h3>一句话要未来发生</h3>
+        <p>“明天提醒我”“每天早上总结”“每小时检查一次”。核心是时间，不是复杂协作。</p>
+        <span class="try">选 Cron：把事放到钟表上。</span>
+      </div>
+      <div class="choose-path">
+        <h3>现在拆三路问完</h3>
+        <p>你还在当前会话里等答案，只是希望几个子任务同时跑，最后把摘要合回来。</p>
+        <span class="try">选 Delegation：一次分身，马上汇合。</span>
+      </div>
+      <div class="choose-path">
+        <h3>事情要被追踪接力</h3>
+        <p>任务会跨角色、跨天、跨重启，可能需要人评论或解除阻塞，还要留下交接记录。</p>
+        <span class="try">选 Kanban：把工作变成看得见的队列。</span>
+      </div>
+      <div class="choose-path">
+        <h3>别停，直到一个目标完成</h3>
+        <p>还是同一个 agent 在当前目标上反复推进，比如修测试、清 lint、调查问题并写报告。</p>
+        <span class="try">选 Goals：让它自己继续下一轮。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COLOPHON ============ -->
+  <footer class="colophon">
+    <div>
+      <h3>Read the originals</h3>
+      <ul>
+        <li>I &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/cron">Scheduled Tasks (Cron)</a></li>
+        <li>II &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation">Subagent Delegation</a></li>
+        <li>III &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban">Kanban (Multi-Agent Board)</a></li>
+        <li>IV &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial">Kanban tutorial</a></li>
+        <li>V &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/goals">Persistent Goals</a></li>
+        <li>VI &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/code-execution">Code Execution</a></li>
+        <li>VII &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks">Event Hooks</a></li>
+        <li>VIII &middot; <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/batch-processing">Batch Processing</a></li>
+      </ul>
+    </div>
+    <div class="meta">
+      <h3>Colophon</h3>
+      <p>Set in <em>Fraunces</em> (Undercase Type) and <em>DM Mono</em> (Colophon Foundry). Hand-drawn diagrams in inline SVG. No build step, no JavaScript framework, ~1 file.</p>
+      <p>An unofficial reader's companion to the Hermes Agent docs by Nous Research. The original articles are the source of truth &mdash; this is a doorway in.</p>
+    </div>
+  </footer>
+
+</div>
+<script>
+(() => {
+  const STORAGE_KEY = "hermes-field-guide-language";
+  const originals = new WeakMap();
+
+  const remember = (element, property, value) => {
+    let record = originals.get(element);
+    if (!record) {
+      record = {};
+      originals.set(element, record);
+    }
+    if (!(property in record)) record[property] = value;
+    return record[property];
+  };
+
+  const htmlTargets = [
+    { selector: "title", zh: `Hermes Agent — 八项能力实地指南` },
+    { selector: ".folio-row span:nth-child(1)", zh: `第一卷 &mdash; 初版` },
+    { selector: ".folio-row span:nth-child(2)", zh: `Nous Research` },
+    { selector: ".folio-row span:nth-child(3)", zh: `致初来者` },
+    { selector: "h1.title", zh: `Hermes <span class="ampersand">与</span> 八项能力<span class="small-cap">首次旅人的实地指南</span>` },
+    { selector: ".deck", zh: `八项特性，逐一标注、命名，让你<span class="marker">一分钟内选对工具</span>，不再纠结到底该用 cron、delegation 还是 kanban。` },
+    { selector: ".preamble .lede p:nth-child(1)", zh: `<span class="drop-cap">H</span>ermes 是一个替你把事做完的 agent &mdash; 但每个新手都会撞上同一个问题：<em>我该拉哪根杆？</em>安排一个定时任务？拉起几个帮手？设定目标然后放手？这份指南里的八项特性，分别回答了 <em>“这件事应该怎样被完成？”</em> 的不同版本。等你能叫出它们的名字，文档就不再像迷宫。` },
+    { selector: ".preamble .lede p:nth-child(2)", zh: `下面每一节都会按你大概会问的顺序说明：它是什么、什么时候该用、什么时候<em>不该用</em>，以及一个能真正做点事的最小示例。` },
+    { selector: ".glance h2", zh: `速览 &mdash; 直接跳转` },
+    { selector: ".glance ol li:nth-child(1)", zh: `<b><a href="#cron">Cron</a></b> &mdash; 按计划执行` },
+    { selector: ".glance ol li:nth-child(2)", zh: `<b><a href="#delegation">Delegation</a></b> &mdash; 现在就拉起帮手` },
+    { selector: ".glance ol li:nth-child(3)", zh: `<b><a href="#kanban">Kanban</a></b> &mdash; 多个 agent 共享的看板` },
+    { selector: ".glance ol li:nth-child(4)", zh: `<b><a href="#kanban-tutorial">Kanban Stories</a></b> &mdash; 四个示例 + 实操路线` },
+    { selector: ".glance ol li:nth-child(5)", zh: `<b><a href="#goals">Goals</a></b> &mdash; 不完成不停下` },
+    { selector: ".glance ol li:nth-child(6)", zh: `<b><a href="#code-exec">Code Execution</a></b> &mdash; 一段脚本，串起多种工具` },
+    { selector: ".glance ol li:nth-child(7)", zh: `<b><a href="#hooks">Hooks</a></b> &mdash; 响应事件` },
+    { selector: ".glance ol li:nth-child(8)", zh: `<b><a href="#batch">Batch</a></b> &mdash; 一次处理数千个提示词` },
+    { selector: ".compass h2", zh: `你想让 Hermes 做什么<span class="question-mark">？</span>` },
+    { selector: ".compass .compass-sub", zh: `意图地图 &mdash; 沿线查找` },
+
+    { selector: "#cron .entry-numeral .label", zh: `定时` },
+    { selector: "#cron h3", zh: `计划任务 <span class="latin">又名 Cron</span>` },
+    { selector: "#cron .tagline", zh: `"设好它。放下它。相信那一声滴答。"` },
+    { selector: "#cron .entry-prose p:nth-child(1)", zh: `告诉 Hermes <strong>稍后再做这件事</strong> &mdash; 一次也行，每小时也行，每周日 9 点也行，随你。Gateway daemon 每 60 秒滴答一次，到点的任务会在全新的 agent 会话中运行，然后把结果送到你指定的地方（聊天、文件、Telegram、Discord、邮件&hellip;）。` },
+    { selector: "#cron .entry-prose p:nth-child(2)", zh: `三种排程方式：相对延迟（<code>30m</code>）、固定间隔（<code>every 2h</code>），或完整 cron 表达式（<code>0 9 * * 1-5</code>）。你也可以直接用自然语言<em>告诉 Hermes</em> &mdash; “每天早上 9 点总结 Hacker News，并在 Telegram 私信我” &mdash; 它会替你把 cron job 接好。` },
+    { selector: "#cron .entry-prose p:nth-child(3)", zh: `新手最容易踩的坑：cron 会在一个<em>全新</em>会话里运行，完全不记得你上一轮聊天说过什么。agent 需要知道的所有信息，都必须写进 prompt。` },
+    { selector: "#cron .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#cron .when-box dd:nth-of-type(1)", zh: `你想要重复执行或未来定时的工作 &mdash; 每日简报、每小时轮询、“30 分钟后提醒我”。` },
+    { selector: "#cron .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#cron .when-box dd:nth-of-type(2)", zh: `你需要结果<em>现在</em>就在这段对话里回来。那就正常使用 agent。` },
+    { selector: "#cron .codeblock", zh: `<span class="c-prompt">/cron add</span> <span class="c-str">"every 1h" "总结新的订阅条目"</span> <span class="c-key">--skill</span> blogwatcher` },
+    { selector: "#cron .diagram .caption", zh: `Daemon 滴答计时；到期任务拉起全新会话；输出被送到你指定的地方。` },
+
+    { selector: "#delegation .entry-numeral .label", zh: `帮手` },
+    { selector: "#delegation h3", zh: `子 Agent 委派 <span class="latin">又名 delegate_task</span>` },
+    { selector: "#delegation .tagline", zh: `"多双手做事，一个头脑读报告。"` },
+    { selector: "#delegation .entry-prose p:nth-child(1)", zh: `让主 agent <strong>拉起子 agent</strong> 并行做事。每个子 agent 都有全新且隔离的上下文，以及受限的工具集。默认最多同时拉起 3 个。只有最终摘要会返回 &mdash; 中间噪音不会挤进你的上下文。` },
+    { selector: "#delegation .entry-prose p:nth-child(2)", zh: `把它想成 <em>fork &amp; join</em>：父 agent 会阻塞，直到所有子 agent 返回，然后继续往下做。除非父 agent 通过 <code>context</code> 字段显式传入，否则子 agent 对父 agent 知道的内容一无所知。` },
+    { selector: "#delegation .entry-prose p:nth-child(3)", zh: `关键区别：<em>delegation 是同步且短暂的</em>。如果用户打断父 agent，所有子 agent 都会停止，它们的工作会被丢弃。需要持久化的工作，用 Cron 或 Kanban。` },
+    { selector: "#delegation .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#delegation .when-box dd:nth-of-type(1)", zh: `你需要并行回答 3 个研究问题，想在不淹没上下文的前提下重构大型代码库，或想把更便宜的子任务委派给更小的模型。` },
+    { selector: "#delegation .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#delegation .when-box dd:nth-of-type(2)", zh: `这件事必须经得起打断、需要人工输入，或可能被另一个角色接手。` },
+    { selector: "#delegation .codeblock", zh: `<span class="c-key">delegate_task</span>(tasks=[
+  {<span class="c-str">"goal"</span>: <span class="c-str">"调研 2025 年的 WebAssembly"</span>, <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+  {<span class="c-str">"goal"</span>: <span class="c-str">"调研 2025 年的 RISC-V"</span>,      <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+  {<span class="c-str">"goal"</span>: <span class="c-str">"调研 2025 年的量子计算"</span>,     <span class="c-str">"toolsets"</span>: [<span class="c-str">"web"</span>]},
+])` },
+    { selector: "#delegation .diagram .caption", zh: `分叉成 N 个隔离的子 agent，再汇总它们的摘要。` },
+
+    { selector: "#kanban .entry-numeral .label", zh: `看板` },
+    { selector: "#kanban h3", zh: `Kanban <span class="latin">又名多 Agent 任务看板</span>` },
+    { selector: "#kanban .tagline", zh: `"一块 agent 们共享的看板 &mdash; 每一行都经得起重启。"` },
+    { selector: "#kanban .entry-prose p:nth-child(1)", zh: `一个由 SQLite 持久化的任务看板，让多个<strong>具名 profile</strong>（researcher、reviewer、writer、deploy-bot）长期协作。任务有状态、依赖、评论、重试和完整审计轨迹。Gateway 里的 dispatcher 会认领 ready 任务，并拉起拥有该任务的 profile。` },
+    { selector: "#kanban .entry-prose p:nth-child(2)", zh: `如果说 delegation 是一次函数调用，那么 kanban 就是一个<em>工作队列</em>：每次交接都是一行记录，人类随时可以评论或解除阻塞，worker 崩了也会被回收并重试，而不是把任务弄丢。` },
+    { selector: "#kanban .entry-prose p:nth-child(3)", zh: `打开 dashboard（<code>hermes dashboard</code> &rarr; Kanban 标签页），你会得到一个 Linear 风格的拖拽看板，列包括 Triage / Todo / Ready / Running / Blocked / Done。` },
+    { selector: "#kanban .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#kanban .when-box dd:nth-of-type(1)", zh: `工作跨越 agent 边界、需要经得起重启、可能需要人工输入，或你有<em>舰队式</em>工作（一类专家 + 50 个对象）。` },
+    { selector: "#kanban .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#kanban .when-box dd:nth-of-type(2)", zh: `你只是想让父 agent 并行思考三件事并合并结果 &mdash; 那正是 delegation 的工作。` },
+    { selector: "#kanban .codeblock", zh: `<span class="c-prompt">$</span> hermes kanban init
+<span class="c-prompt">$</span> hermes gateway start
+<span class="c-prompt">$</span> hermes kanban create <span class="c-str">"研究 AI 融资"</span> &#92;
+    <span class="c-key">--assignee</span> researcher
+<span class="c-prompt">$</span> hermes kanban watch  <span class="c-cmt"># 实时事件流</span>` },
+    { selector: "#kanban .diagram .caption", zh: `六列。真实交接。真实审计日志。` },
+
+    { selector: "#kanban-tutorial .entry-numeral .label", zh: `案例` },
+    { selector: "#kanban-tutorial h3", zh: `Kanban Stories <span class="latin">又名四个完整示例</span>` },
+    { selector: "#kanban-tutorial .tagline", zh: `"先看它怎样运转，再决定要不要投入。"` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(1)", zh: `配套教程用 dashboard（可视化看板页面）截图走完四种<strong>真实工作形态</strong>：` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(2)", zh: `<strong>① 单人开发者发布一个功能</strong> &mdash; 三个串联任务：schema（数据库结构）→ API（接口）→ tests（测试）。每一步都交接结构化的 <code>--summary</code>（交接摘要）+ <code>--metadata</code>（结构化附加信息），这样下一个 worker（接任务干活的 agent）不必重新读设计文档。` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(3)", zh: `<strong>② 舰队式批量处理</strong> &mdash; 一个 translator profile（翻译员身份配置）、一个 transcriber profile（转写员身份配置）、一个 copywriter（文案写作者），同时清空各自队列。你睡觉时，它们也在并行推进。` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(4)", zh: `<strong>③ 带重试的角色流水线</strong> &mdash; PM（产品/项目负责人）写 spec（需求规格），engineer（工程师）实现，reviewer（评审者）打回，engineer 迭代，reviewer 通过。重试历史会被保留，所以第二次尝试看得见第一次为什么失败。` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(5)", zh: `<strong>④ 崩溃与熔断</strong> &mdash; worker（执行任务的 agent）因 OOM（内存耗尽）被杀，dispatcher（调度器）发现死亡 PID（进程编号）后重新入队。连续 N 次 spawn（启动 worker）失败后，熔断器触发，任务自动变为 blocked（阻塞状态）。` },
+    { selector: "#kanban-tutorial .entry-prose p:nth-child(6)", zh: `如果你刚入门，这一页会让 Kanban 真正变得清楚。参考页告诉你<em>是什么</em>；这些故事让你看见<em>为什么</em>；下面的实操路线告诉你<em>第一步怎么做</em>。` },
+    { selector: "#kanban-tutorial .when-box dt", zh: `适合阅读它的时候` },
+    { selector: "#kanban-tutorial .when-box dd", zh: `你扫过 Kanban reference（参考文档），却还不确定什么时候该选它而不是 TODO list（普通待办清单）。flat-todo（扁平待办）与 retry-aware run（知道失败原因、能重试的运行记录）的对比故事，就是那个豁然开朗的瞬间。` },
+    { selector: "#kanban-tutorial .diagram .caption", zh: `故事 ③：每次重试都是一行记录。下一次尝试会读取上一次阻塞的原因。` },
+
+    { selector: "#goals .entry-numeral .label", zh: `持久` },
+    { selector: "#goals h3", zh: `持久目标 <span class="latin">又名 /goal</span>` },
+    { selector: "#goals .tagline", zh: `"别停，直到它完成 &mdash; 也别再一遍遍说 <em>“继续”</em>。"` },
+    { selector: "#goals .entry-prose p:nth-child(1)", zh: `你把一个<strong>能跨轮次保存</strong>的目标交给 Hermes。每一轮之后，一个很小的 judge model 会判断 “done?” 还是 “continue?” 如果是 continue，Hermes 会自动给自己喂一条 continuation prompt 并继续工作 &mdash; 默认最多 20 轮，然后暂停，等你用 <code>/goal resume</code> 恢复。` },
+    { selector: "#goals .entry-prose p:nth-child(2)", zh: `这是 Hermes 对 <em>Ralph loop</em> 模式的实现。适合那些本来需要你坐在旁边连说三遍 “keep going” 的任务：lint 清扫、多文件迁移、“调查这个 drift bug 并写报告”。` },
+    { selector: "#goals .entry-prose p:nth-child(3)", zh: `用户消息永远会抢占循环 &mdash; 你一输入，它就暂停。<code>/goal pause</code>、<code>/goal resume</code>、<code>/goal clear</code>、<code>/goal status</code> 是几根控制杆。` },
+    { selector: "#goals .entry-prose p:nth-child(4)", zh: `judge 被刻意设计得很保守：只有当回复<em>明确</em>确认工作已经完成、交付物清楚产出，或目标确实无法达成时，它才会标记 done。` },
+    { selector: "#goals .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#goals .when-box dd:nth-of-type(1)", zh: `任务是迭代型且定义清楚的，比如：“修复 <code>tests/foo/</code> 中所有失败测试，直到 <code>scripts/run_tests.sh</code> 通过。”` },
+    { selector: "#goals .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#goals .when-box dd:nth-of-type(2)", zh: `agent 正常一轮就能完成。Goals 是给需要自驱迭代的任务用的。` },
+    { selector: "#goals .codeblock", zh: `<span class="c-prompt">/goal</span> 修复 src/ 中所有 lint 错误并验证
+       <span class="c-str">ruff check</span> 通过
+<span class="c-cmt"># → ⊙ 目标已设置（20 轮预算）</span>
+<span class="c-cmt"># → 第 1 轮运行，judge 判断继续</span>
+<span class="c-cmt"># → ↻ 继续朝目标推进（1/20）</span>
+<span class="c-cmt"># → ✓ 目标达成</span>` },
+    { selector: "#goals .diagram .caption", zh: `循环、判断、重复 &mdash; 直到完成，或预算耗尽。` },
+
+    { selector: "#code-exec .entry-numeral .label", zh: `脚本` },
+    { selector: "#code-exec h3", zh: `代码执行 <span class="latin">又名 execute_code</span>` },
+    { selector: "#code-exec .tagline", zh: `"一段 Python 脚本。多种工具。一个 LLM 回合。"` },
+    { selector: "#code-exec .entry-prose p:nth-child(1)", zh: `Hermes 可以写一段<strong>会调用 Hermes 工具的 Python 脚本</strong> &mdash; <code>web_search</code>、<code>read_file</code>、<code>patch</code>、<code>terminal</code>、<code>search_files</code>&hellip; &mdash; 并在工具调用之间使用正常的 Python 流程控制。脚本在沙盒子进程中运行，只有它的 <code>print()</code> 输出会返回。` },
+    { selector: "#code-exec .entry-prose p:nth-child(2)", zh: `它重要的原因是：普通多工具流程里，每个中间结果都会进入 LLM 上下文。有了 <code>execute_code</code>，你可以遍历 50 条搜索结果、过滤、抓取、汇总 &mdash; LLM 只看到最终摘要。<em>对工具密集型任务来说，这是巨大的 token 节省。</em>` },
+    { selector: "#code-exec .entry-prose p:nth-child(3)", zh: `agent 会自己决定什么时候使用它。当出现 3 次以上工具调用，并且中间有逻辑（循环、过滤、条件分支）时，它会倾向选择 <code>execute_code</code>。` },
+    { selector: "#code-exec .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#code-exec .when-box dd:nth-of-type(1)", zh: `机械管线型任务 &mdash; “找出所有包含 X 的文件，逐个读取，抽取 Y，计数并报告。”（或者直接相信 agent 会替你挑。）` },
+    { selector: "#code-exec .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#code-exec .when-box dd:nth-of-type(2)", zh: `步骤之间需要推理判断 &mdash; 那是 delegation 的用武之地。另外：仅限 Linux/macOS（使用 Unix domain sockets）。` },
+    { selector: "#code-exec .codeblock", zh: `<span class="c-cmt"># 中间结果不会进入上下文</span>
+<span class="c-key">from</span> hermes_tools <span class="c-key">import</span> web_search, web_extract
+
+results = web_search(<span class="c-str">"Rust async runtimes"</span>, limit=<span class="c-str">5</span>)
+summaries = []
+<span class="c-key">for</span> r <span class="c-key">in</span> results[<span class="c-str">"data"</span>][<span class="c-str">"web"</span>]:
+    page = web_extract([r[<span class="c-str">"url"</span>]])
+    <span class="c-cmt"># 过滤、汇总…</span>
+    summaries.append(...)
+
+print(json.dumps(summaries))  <span class="c-cmt"># ← 只有这个会返回</span>` },
+    { selector: "#code-exec .diagram .caption", zh: `所有工具噪音都留在上下文之外。` },
+
+    { selector: "#hooks .entry-numeral .label", zh: `响应` },
+    { selector: "#hooks h3", zh: `事件 Hooks <span class="latin">又名 listen, block, inject</span>` },
+    { selector: "#hooks .tagline", zh: `"在真正关键的时刻运行你的代码。"` },
+    { selector: "#hooks .entry-prose p:nth-child(1)", zh: `三种 hook（钩子，也就是“某个时刻自动触发的逻辑”）能把你的自定义逻辑嵌入 agent 生命周期：<strong>Gateway hooks</strong>（响应 Telegram/Slack/Discord 事件的 Python handler，也就是处理函数）、<strong>Plugin hooks</strong>（Python，CLI 命令行 <em>和</em> gateway 都会触发），以及 <strong>Shell hooks</strong>（在 <code>config.yaml</code> 中声明的即插即用 shell 脚本）。` },
+    { selector: "#hooks .entry-prose p:nth-child(2)", zh: `hooks 可以做三类事，能力依次增强：` },
+    { selector: "#hooks .entry-prose p:nth-child(3)", zh: `① <strong>Observe</strong> &mdash; 记录每一次工具调用，统计 subagent 运行次数，长任务超过 10 步时 ping Telegram。<br>
+            ② <strong>Block</strong> &mdash; <code>pre_tool_call</code> 可以在危险 shell 命令运行前否决它（例如禁止 <code>rm&nbsp;-rf&nbsp;/</code>）。<br>
+            ③ <strong>Inject</strong> &mdash; <code>pre_llm_call</code> 可以在每一轮把上下文插到用户消息前面（记忆召回、“今天是周五”、当前 <code>git status</code>）。` },
+    { selector: "#hooks .entry-prose p:nth-child(4)", zh: `一个有名的社区模式：放一个带自然语言启动说明的 <code>~/.hermes/BOOT.md</code>，在 <code>gateway:startup</code> 上接一个 hook，Hermes 每次启动都会跑你的 checklist。` },
+    { selector: "#hooks .when-box dt", zh: `该用它的时候` },
+    { selector: "#hooks .when-box dd", zh: `你想要审计、护栏、写入后的自动格式化、RAG 风格的上下文注入，或一套启动仪式。` },
+    { selector: "#hooks .diagram .caption", zh: `Hooks 会插进 agent 回合管线的具名时刻。` },
+
+    { selector: "#batch .entry-numeral .label", zh: `规模` },
+    { selector: "#batch h3", zh: `批处理 <span class="latin">又名 batch_runner.py</span>` },
+    { selector: "#batch .tagline", zh: `"数千条提示词。一次运行。导出 ShareGPT 轨迹。"` },
+    { selector: "#batch .entry-prose p:nth-child(1)", zh: `Batch processing（批处理）是<strong>训练数据生成</strong>和<strong>模型评测</strong>工具，不是日常聊天入口。你喂给它一个 prompts 的 JSONL 文件（每一行是一条提示词），设置并行度，每条 prompt 都会获得自己隔离的 agent 会话和采样工具集。输出是结构化的 ShareGPT 格式轨迹，包含完整对话历史、工具统计和 reasoning（推理过程）覆盖情况。` },
+    { selector: "#batch .entry-prose p:nth-child(2)", zh: `Resume（续跑）是内容感知的 &mdash; 如果一次运行中途崩了，<code>--resume</code> 会扫描已有 batch 文件，按<em>真实文本</em>匹配已经完成的 prompts，只重跑缺失部分。质量过滤会丢弃没有 reasoning 的样本，以及带有幻觉工具名的条目。` },
+    { selector: "#batch .entry-prose p:nth-child(3)", zh: `你可以为每条 prompt 固定一个 Docker image（Docker 镜像；这样 “compile this Rust” 这类题就能拿到 Rust container，也就是 Rust 运行环境），也可以为每条 prompt 固定工作目录。` },
+    { selector: "#batch .entry-prose p:nth-child(4)", zh: `这是给 fine-tuning（微调）和 eval（评测）工作流用的，不是给普通 agent 用户用的。如果你不是在训练或评测模型，可以先跳过它。` },
+    { selector: "#batch .when-box dt:not(.warn)", zh: `该用它的时候` },
+    { selector: "#batch .when-box dd:nth-of-type(1)", zh: `你在生成用于 fine-tuning 的工具使用轨迹，或想衡量一个模型处理一组 benchmark prompts 的能力。` },
+    { selector: "#batch .when-box dt.warn", zh: `不该用它的时候` },
+    { selector: "#batch .when-box dd:nth-of-type(2)", zh: `你只是想让 agent 处理一个任务 &mdash; 那就是&hellip;正常使用 agent。` },
+    { selector: "#batch .diagram .caption", zh: `用于训练数据生成和 eval 工作流。` },
+
+    { selector: ".comparison-section h2", zh: `最容易让人混淆的组合` },
+    { selector: ".comparison-section .sub", zh: `Cron vs. Delegation vs. Kanban vs. Goals &mdash; 按它们的本质命名，而不是按表象命名。` },
+    { selector: "table.compare tbody tr:nth-child(1) th", zh: `形态` },
+    { selector: "table.compare tbody tr:nth-child(1) td:nth-child(2)", zh: `定时触发，发出即忘` },
+    { selector: "table.compare tbody tr:nth-child(1) td:nth-child(3)", zh: `同步分叉再汇合` },
+    { selector: "table.compare tbody tr:nth-child(1) td:nth-child(4)", zh: `持久队列 + 状态机` },
+    { selector: "table.compare tbody tr:nth-child(1) td:nth-child(5)", zh: `在同一会话中自动循环` },
+    { selector: "table.compare tbody tr:nth-child(2) th", zh: `什么时候运行？` },
+    { selector: "table.compare tbody tr:nth-child(2) td:nth-child(2)", zh: `按计划运行（或在未来某个时间点运行）` },
+    { selector: "table.compare tbody tr:nth-child(2) td:nth-child(3)", zh: `现在运行，并阻塞父 agent` },
+    { selector: "table.compare tbody tr:nth-child(2) td:nth-child(4)", zh: `dispatcher 认领时运行（约 60 秒一次 tick）` },
+    { selector: "table.compare tbody tr:nth-child(2) td:nth-child(5)", zh: `每一轮都运行，直到完成` },
+    { selector: "table.compare tbody tr:nth-child(3) th", zh: `能跨重启吗？` },
+    { selector: "table.compare tbody tr:nth-child(3) td:nth-child(2)", zh: `✓ &mdash; daemon 会接着处理` },
+    { selector: "table.compare tbody tr:nth-child(3) td:nth-child(3)", zh: `✗ &mdash; 跟父回合一起结束` },
+    { selector: "table.compare tbody tr:nth-child(3) td:nth-child(4)", zh: `✓ &mdash; 行记录长期存在` },
+    { selector: "table.compare tbody tr:nth-child(3) td:nth-child(5)", zh: `✓ &mdash; 持久化在会话状态中` },
+    { selector: "table.compare tbody tr:nth-child(4) th", zh: `有人参与吗？` },
+    { selector: "table.compare tbody tr:nth-child(4) td:nth-child(2)", zh: `只负责通知` },
+    { selector: "table.compare tbody tr:nth-child(4) td:nth-child(3)", zh: `否 &mdash; 子 agent 不能提问` },
+    { selector: "table.compare tbody tr:nth-child(4) td:nth-child(4)", zh: `✓ &mdash; 随时评论、解除阻塞` },
+    { selector: "table.compare tbody tr:nth-child(4) td:nth-child(5)", zh: `✓ &mdash; 用户消息总会抢占` },
+    { selector: "table.compare tbody tr:nth-child(5) th", zh: `多个 worker？` },
+    { selector: "table.compare tbody tr:nth-child(5) td:nth-child(2)", zh: `每个 job 独立执行` },
+    { selector: "table.compare tbody tr:nth-child(5) td:nth-child(3)", zh: `默认最多 3 个并发（可配置）` },
+    { selector: "table.compare tbody tr:nth-child(5) td:nth-child(4)", zh: `多个具名 profile，可成批调度` },
+    { selector: "table.compare tbody tr:nth-child(5) td:nth-child(5)", zh: `一个 agent，多轮推进` },
+    { selector: "table.compare tbody tr:nth-child(6) th", zh: `最适合` },
+    { selector: "table.compare tbody tr:nth-child(6) td:nth-child(2)", zh: `"每天早上 9 点做 X。"` },
+    { selector: "table.compare tbody tr:nth-child(6) td:nth-child(3)", zh: `"并行调研这 3 件事。"` },
+    { selector: "table.compare tbody tr:nth-child(6) td:nth-child(4)", zh: `"让这项工作跨角色流转。"` },
+    { selector: "table.compare tbody tr:nth-child(6) td:nth-child(5)", zh: `"别停，直到所有测试通过。"` },
+    { selector: "table.compare tbody tr:nth-child(7) th", zh: `通过什么<br>调用` },
+    { selector: "table.compare tbody tr:nth-child(7) td:nth-child(2)", zh: `<code>/cron add</code> 或自然语言` },
+    { selector: "table.compare tbody tr:nth-child(7) td:nth-child(3)", zh: `Agent 通过 <code>delegate_task</code> 自行决定` },
+    { selector: "table.compare tbody tr:nth-child(7) td:nth-child(4)", zh: `<code>hermes kanban create</code>` },
+    { selector: "table.compare tbody tr:nth-child(7) td:nth-child(5)", zh: `<code>/goal &lt;text&gt;</code>` },
+
+    { selector: ".colophon h3:nth-of-type(1)", zh: `阅读原文` },
+    { selector: ".colophon ul li:nth-child(1) a", zh: `计划任务（Cron）` },
+    { selector: ".colophon ul li:nth-child(2) a", zh: `子 Agent 委派` },
+    { selector: ".colophon ul li:nth-child(3) a", zh: `Kanban（多 Agent 看板）` },
+    { selector: ".colophon ul li:nth-child(4) a", zh: `Kanban 教程` },
+    { selector: ".colophon ul li:nth-child(5) a", zh: `持久目标` },
+    { selector: ".colophon ul li:nth-child(6) a", zh: `代码执行` },
+    { selector: ".colophon ul li:nth-child(7) a", zh: `事件 Hooks` },
+    { selector: ".colophon ul li:nth-child(8) a", zh: `批处理` },
+    { selector: ".colophon .meta h3", zh: `制作说明` },
+    { selector: ".colophon .meta p:nth-of-type(1)", zh: `排版使用 <em>Fraunces</em>（Undercase Type）和 <em>DM Mono</em>（Colophon Foundry）。手绘风图解采用内联 SVG。无需 build step，无 JavaScript 框架，约 1 个文件。` },
+    { selector: ".colophon .meta p:nth-of-type(2)", zh: `这是 Nous Research 的 Hermes Agent 文档的一份非官方读者导览。原文始终是事实来源 &mdash; 这里是一道入口。` },
+  ];
+
+  const attributeTargets = [
+    { selector: ".language-switcher", attr: "aria-label", zh: `语言` },
+    { selector: "svg.tree", attr: "aria-label", zh: `将用户意图映射到功能的决策图` },
+    { selector: "#cron .codeblock", attr: "data-label", zh: `聊天里一行命令` },
+    { selector: "#delegation .codeblock", attr: "data-label", zh: `由 agent 自己调用` },
+    { selector: "#kanban .codeblock", attr: "data-label", zh: `在 shell 中` },
+    { selector: "#goals .codeblock", attr: "data-label", zh: `任意会话中` },
+    { selector: "#code-exec .codeblock", attr: "data-label", zh: `agent 写出的脚本` },
+    { selector: "#hooks .codeblock", attr: "data-label", zh: `config.yaml 中的 shell hook` },
+    { selector: "#batch .codeblock", attr: "data-label", zh: `在命令行中` },
+  ];
+
+  const textTargets = new Map([
+    ["A task needs doing", "有件事需要完成"],
+    ["START HERE", "从这里开始"],
+    ["when?", "何时？"],
+    ["how many?", "多少个？"],
+    ["how long?", "持续多久？"],
+    ["how observed?", "如何观察？"],
+    ["later? on a schedule?", "稍后？按计划？"],
+    ["in fresh sessions?", "在全新会话中？"],
+    ["a few right now,", "现在要几个，"],
+    ["in parallel?", "并行处理？"],
+    ["work that survives", "能跨越重启"],
+    ["restarts & humans?", "和人工介入？"],
+    ["react to lifecycle", "响应生命周期"],
+    ["events?", "事件？"],
+    ["recurring or one-shot", "重复还是一次性"],
+    ["isolated & ephemeral", "隔离且短暂"],
+    ["named, shared board", "命名的共享看板"],
+    ["tool / message / startup", "工具 / 消息 / 启动"],
+    ["keep going?", "继续推进？"],
+    ["tool chains?", "工具链？"],
+    ["at scale?", "大规模？"],
+    ["don't stop until", "不到目标"],
+    ["a goal is met", "不停下"],
+    ["3+ tool calls in", "3+ 次工具调用"],
+    ["one Python script", "写进一个 Python 脚本"],
+    ["thousands of prompts", "数千条提示词"],
+    ["in parallel", "并行执行"],
+    ["TICK · 60s", "滴答 · 60s"],
+    ["fresh", "全新"],
+    ["agent", "agent"],
+    ["session", "会话"],
+    ["RUNS PROMPT", "运行提示词"],
+    ["→ chat / file / Slack / email", "→ 聊天 / 文件 / Slack / 邮件"],
+    ["parent", "父 agent"],
+    ["YOUR AGENT", "你的 AGENT"],
+    ["child 1", "子 agent 1"],
+    ["child 2", "子 agent 2"],
+    ["child 3", "子 agent 3"],
+    ["PARALLEL · ISOLATED · FRESH CONTEXT", "并行 · 隔离 · 全新上下文"],
+    ["→ summaries return to parent", "→ 摘要回到父 agent"],
+    ["TODO", "待办"],
+    ["READY", "就绪"],
+    ["RUNNING", "运行中"],
+    ["BLOCKED", "阻塞"],
+    ["DONE", "完成"],
+    ["spec API", "规范 API"],
+    ["draft post", "写草稿"],
+    ["review PR", "审 PR"],
+    ["build", "构建"],
+    ["translate", "翻译"],
+    ["deploy ⚠", "部署 ⚠"],
+    ["STORY ③ · ROLE PIPELINE WITH RETRY", "故事 ③ · 带重试的角色流水线"],
+    ["spec", "规格"],
+    ["impl", "实现"],
+    ["DONE (run 2)", "完成（第 2 次）"],
+    ["run 1", "第 1 次"],
+    ["run 2", "第 2 次"],
+    ["\"missing strength check\"", "“缺少强度检查”"],
+    ["COMPLETED", "已完成"],
+    ["review", "评审"],
+    ["THE GOAL LOOP", "目标循环"],
+    ["agent turn", "agent 回合"],
+    ["DOES THE WORK", "执行工作"],
+    ["judge", "judge"],
+    ["DONE? CONTINUE?", "完成？继续？"],
+    ["↻ continue → fresh continuation prompt", "↻ 继续 → 全新的续写提示词"],
+    ["20-turn budget · pauses if hit", "20 轮预算 · 用完即暂停"],
+    ["CONTEXT-EFFICIENT TOOL CHAINS", "节省上下文的工具链"],
+    ["LLM turn", "LLM 回合"],
+    ["writes", "写出"],
+    ["PYTHON SCRIPT", "PYTHON 脚本"],
+    ["filter / sum…", "过滤 / 汇总…"],
+    ["VIA", "通过"],
+    ["UNIX", "UNIX"],
+    ["SOCKET", "SOCKET"],
+    ["ONLY print() RETURNS", "只有 print() 返回"],
+    ["THE AGENT TURN PIPELINE", "AGENT 回合管线"],
+    ["USER MSG", "用户消息"],
+    ["inject", "注入"],
+    ["block", "阻断"],
+    ["log", "记录"],
+    ["↑ INJECT & BLOCK", "↑ 注入与阻断"],
+    ["↓ OBSERVE", "↓ 观察"],
+    ["JSONL → WORKERS → TRAJECTORIES", "JSONL → WORKERS → 轨迹"],
+    ["PROMPTS", "提示词"],
+    ["N WORKERS", "N 个 WORKER"],
+    ["TRAJECTORIES", "轨迹"],
+    ["…1000s", "…数千条"],
+    ["RESUMABLE · QUALITY-FILTERED · SHAREGPT FORMAT", "可续跑 · 质量过滤 · SHAREGPT 格式"],
+  ]);
+
+  const readSavedLanguage = () => {
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  };
+
+  const saveLanguage = (language) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, language);
+    } catch {
+      // Local files can be opened in stricter browser contexts; the switch should still work.
+    }
+  };
+
+  const applyLanguage = (language) => {
+    const lang = language === "zh" ? "zh" : "en";
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.body.dataset.lang = lang;
+
+    document.querySelectorAll("[data-zh-only]").forEach((element) => {
+      element.hidden = lang !== "zh";
+    });
+
+    htmlTargets.forEach(({ selector, zh }) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        const original = remember(element, "innerHTML", element.innerHTML);
+        element.innerHTML = lang === "zh" ? zh : original;
+      });
+    });
+
+    attributeTargets.forEach(({ selector, attr, zh }) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        const original = remember(element, attr, element.getAttribute(attr) || "");
+        element.setAttribute(attr, lang === "zh" ? zh : original);
+      });
+    });
+
+    document.querySelectorAll("svg text").forEach((element) => {
+      const original = remember(element, "textContent", element.textContent);
+      element.textContent = lang === "zh" && textTargets.has(original) ? textTargets.get(original) : original;
+    });
+
+    document.querySelectorAll("[data-lang-option]").forEach((button) => {
+      const active = button.dataset.langOption === lang;
+      button.setAttribute("aria-pressed", String(active));
+    });
+
+    saveLanguage(lang);
+  };
+
+  document.querySelectorAll("[data-lang-option]").forEach((button) => {
+    button.addEventListener("click", () => applyLanguage(button.dataset.langOption));
+  });
+
+  applyLanguage(readSavedLanguage() || "en");
+})();
+</script>
+</body>
+</html>
