@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hermes Agent v0.13.0: The Tenacity Release</title>
+  <style>
+    :root {
+      --bg: #07070d;
+      --surface: #0f0f18;
+      --surface-2: #141420;
+      --surface-3: #191928;
+      --ink: #fafaf6;
+      --text: #e8e4dc;
+      --muted: #9a968e;
+      --faint: #6f6b63;
+      --gold: #ffd700;
+      --gold-2: #ffbf00;
+      --gold-dark: #8b6508;
+      --border: rgba(255, 215, 0, 0.10);
+      --border-strong: rgba(255, 215, 0, 0.22);
+      --blue: #60a5fa;
+      --green: #4ade80;
+      --red: #fb806c;
+      --max: 1080px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(255, 215, 0, 0.08), transparent 38rem),
+        radial-gradient(rgba(255, 215, 0, 0.025) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 32px 32px, auto;
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.72;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.28);
+    }
+
+    a:hover {
+      color: var(--gold-2);
+      border-bottom-color: var(--gold-2);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(16px) saturate(1.35);
+      background: rgba(7, 7, 13, 0.84);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0.8rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.62rem;
+      color: var(--ink);
+      border: 0;
+      font-weight: 700;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.18), rgba(255, 215, 0, 0.04));
+      color: var(--gold);
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .navlinks {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.95rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .navlinks a {
+      color: var(--muted);
+      border: 0;
+    }
+
+    .navlinks a:hover {
+      color: var(--gold);
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      gap: 0.25rem;
+      padding: 0.25rem;
+      margin-left: 0.5rem;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: rgba(15, 15, 24, 0.75);
+    }
+
+    .lang-switch button {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.42rem 0.78rem;
+      background: transparent;
+      color: var(--muted);
+      font: 700 0.78rem/1 Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+    }
+
+    .lang-switch button.active {
+      background: rgba(255, 215, 0, 0.14);
+      color: var(--gold);
+      box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.14);
+    }
+
+    .page {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 4.4rem 1.25rem 5rem;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 4rem 0 3.3rem;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -14rem 10% auto 10%;
+      height: 30rem;
+      background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.105) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      color: rgba(255, 215, 0, 0.58);
+      margin-bottom: 0.95rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      color: var(--ink);
+      font-size: 4.65rem;
+      line-height: 0.98;
+      letter-spacing: 0;
+      font-weight: 760;
+    }
+
+    .accent {
+      color: var(--gold);
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 2rem 0 0;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.72rem 1rem;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 215, 0, 0.10);
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0 3rem;
+    }
+
+    .meta-card {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(15, 15, 24, 0.74);
+    }
+
+    .meta-card b {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--gold);
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .meta-card span {
+      display: block;
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.52;
+    }
+
+    .article-shell {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .side {
+      position: sticky;
+      top: 5.4rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: rgba(15, 15, 24, 0.72);
+    }
+
+    .side-title {
+      margin: 0 0 0.7rem;
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .side a {
+      display: block;
+      padding: 0.42rem 0;
+      border: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .side a:hover {
+      color: var(--gold);
+    }
+
+    .article {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(15, 15, 24, 0.72);
+      overflow: hidden;
+    }
+
+    .lang-panel {
+      display: none;
+    }
+
+    .lang-panel.active {
+      display: block;
+    }
+
+    .meta-grid.lang-panel.active {
+      display: grid;
+    }
+
+    .section {
+      padding: 2.2rem 2.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    .lead {
+      margin: 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(255, 215, 0, 0.18);
+      border-left: 3px solid var(--gold);
+      border-radius: 12px;
+      background: rgba(255, 215, 0, 0.055);
+      color: var(--text);
+      font-size: 1.02rem;
+    }
+
+    h2 {
+      margin: 0 0 1rem;
+      color: var(--ink);
+      font-size: 2.15rem;
+      line-height: 1.12;
+      letter-spacing: 0;
+      font-weight: 720;
+    }
+
+    h3 {
+      margin: 1.65rem 0 0.55rem;
+      color: var(--gold);
+      font-size: 1.12rem;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0.85rem 0;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    ul,
+    ol {
+      margin: 0.8rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 0.42rem 0;
+      color: var(--text);
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .feature-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: rgba(20, 20, 32, 0.68);
+      transition: border-color 0.18s, transform 0.18s, background 0.18s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 215, 0, 0.23);
+      background: rgba(22, 22, 36, 0.86);
+    }
+
+    .feature-card .tag {
+      display: inline-block;
+      margin-bottom: 0.58rem;
+      padding: 0.22rem 0.5rem;
+      border: 1px solid rgba(255, 215, 0, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 215, 0, 0.06);
+      color: rgba(255, 215, 0, 0.82);
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .feature-card strong {
+      display: block;
+      margin-bottom: 0.32rem;
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.58;
+    }
+
+    .command {
+      margin: 1rem 0;
+      border: 1px solid rgba(255, 215, 0, 0.12);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0a0a12;
+    }
+
+    .command-label {
+      padding: 0.62rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+      color: rgba(255, 215, 0, 0.72);
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0;
+    }
+
+    pre {
+      margin: 0;
+      padding: 0.98rem 1rem 1.05rem;
+      overflow-x: auto;
+      white-space: pre;
+      color: #f5f1e7;
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.86rem;
+      line-height: 1.62;
+      font-variant-ligatures: none;
+    }
+
+    code {
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    p code,
+    li code,
+    td code {
+      padding: 0.12rem 0.32rem;
+      border: 1px solid rgba(255, 215, 0, 0.10);
+      border-radius: 6px;
+      background: rgba(255, 215, 0, 0.06);
+      color: var(--gold);
+      font-size: 0.86em;
+    }
+
+    table {
+      width: 100%;
+      margin: 1rem 0;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: table;
+      font-size: 0.92rem;
+    }
+
+    th,
+    td {
+      padding: 0.78rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.07);
+      vertical-align: top;
+      text-align: left;
+      color: var(--text);
+    }
+
+    th {
+      background: rgba(255, 215, 0, 0.065);
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .note {
+      margin: 1rem 0;
+      padding: 1rem;
+      border: 1px solid rgba(255, 215, 0, 0.16);
+      border-radius: 12px;
+      background: rgba(255, 215, 0, 0.045);
+    }
+
+    .note.warning {
+      border-color: rgba(251, 128, 108, 0.24);
+      background: rgba(251, 128, 108, 0.055);
+    }
+
+    .note strong {
+      color: var(--ink);
+    }
+
+    .refs li {
+      word-break: break-word;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      padding: 1.3rem 0 0;
+      color: var(--faint);
+      font-size: 0.8rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .article-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+
+      .side nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.2rem 1rem;
+      }
+
+      .side nav.lang-panel.active {
+        display: grid;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .navlinks {
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+      }
+
+      .lang-switch {
+        margin-left: 0;
+      }
+
+      .page {
+        padding-top: 2.2rem;
+      }
+
+      .hero {
+        padding-top: 2.4rem;
+      }
+
+      h1 {
+        font-size: 2.45rem;
+      }
+
+      h2 {
+        font-size: 1.62rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .meta-grid,
+      .highlight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 1.55rem 1.15rem;
+      }
+
+      .side nav {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="nav">
+      <a class="brand" href="https://hermes-agent.nousresearch.com" target="_blank" rel="noopener noreferrer">
+        <span class="brand-mark">H</span>
+        <span>Hermes Agent</span>
+      </a>
+      <div class="navlinks">
+        <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">Docs</a>
+        <a href="https://hermes-agent.nousresearch.com/skills" target="_blank" rel="noopener noreferrer">Skills</a>
+        <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <div class="lang-switch" role="group" aria-label="Language switch">
+          <button type="button" class="active" data-lang="zh" aria-pressed="true">中文</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-inner lang-panel active" data-panel="zh">
+        <div class="eyebrow">Hermes Agent v0.13.0 · The Tenacity Release</div>
+        <h1>这次更新，重点是让 Agent <span class="accent">更耐跑</span></h1>
+        <p class="subtitle">如果你只想知道“更新了什么”，Release Notes 已经够了。但如果你想知道这些功能怎么打开、该在什么场景用、能达到什么效果，这篇文章就是为你准备的。</p>
+        <div class="hero-actions">
+          <a class="button" href="#zh-quick">查看重点</a>
+          <a class="button secondary" href="#zh-commands">命令速查</a>
+        </div>
+      </div>
+      <div class="hero-inner lang-panel" data-panel="en">
+        <div class="eyebrow">Hermes Agent v0.13.0 · The Tenacity Release</div>
+        <h1>This release is about making agents <span class="accent">keep going</span></h1>
+        <p class="subtitle">Release notes tell you what shipped. This guide focuses on what changed, how to enable the new capabilities, when to use them, and what practical effect they can have in real workflows.</p>
+        <div class="hero-actions">
+          <a class="button" href="#en-quick">Read highlights</a>
+          <a class="button secondary" href="#en-commands">Command cheatsheet</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="meta-grid lang-panel active" data-panel="zh" aria-label="文章元信息">
+      <div class="meta-card">
+        <b>Version</b>
+        <span>Hermes Agent v0.13.0<br>The Tenacity Release</span>
+      </div>
+      <div class="meta-card">
+        <b>Published</b>
+        <span>GitHub: 2026-05-07 16:23 UTC<br>X: 2026-05-07 21:00 UTC</span>
+      </div>
+      <div class="meta-card">
+        <b>Focus</b>
+        <span>更新解读<br>命令与使用场景</span>
+      </div>
+      <div class="meta-card">
+        <b>Verified With</b>
+        <span>Release notes<br>Docs, CLI, local v0.13.0</span>
+      </div>
+    </section>
+
+    <section class="meta-grid lang-panel" data-panel="en" aria-label="Article metadata">
+      <div class="meta-card">
+        <b>Version</b>
+        <span>Hermes Agent v0.13.0<br>The Tenacity Release</span>
+      </div>
+      <div class="meta-card">
+        <b>Published</b>
+        <span>GitHub: 2026-05-07 16:23 UTC<br>X: 2026-05-07 21:00 UTC</span>
+      </div>
+      <div class="meta-card">
+        <b>Focus</b>
+        <span>Product update guide<br>Commands and workflows</span>
+      </div>
+      <div class="meta-card">
+        <b>Verified With</b>
+        <span>Release notes<br>Docs, CLI, local v0.13.0</span>
+      </div>
+    </section>
+
+    <div class="article-shell">
+      <aside class="side">
+        <p class="side-title" data-i18n="tocTitle">目录</p>
+        <nav class="lang-panel active" data-panel="zh" aria-label="中文目录">
+          <a href="#zh-quick">先看结论</a>
+          <a href="#zh-kanban">Kanban 多 Agent 看板</a>
+          <a href="#zh-goal">/goal 持久目标</a>
+          <a href="#zh-cron">Cron no_agent</a>
+          <a href="#zh-media">视频与语音</a>
+          <a href="#zh-platform">Google Chat 与入口</a>
+          <a href="#zh-security">安全与插件化</a>
+          <a href="#zh-commands">最短上手路径</a>
+        </nav>
+        <nav class="lang-panel" data-panel="en" aria-label="English table of contents">
+          <a href="#en-quick">Highlights</a>
+          <a href="#en-kanban">Kanban board</a>
+          <a href="#en-goal">Persistent goals</a>
+          <a href="#en-cron">Cron no_agent</a>
+          <a href="#en-media">Video and voice</a>
+          <a href="#en-platform">Google Chat and surfaces</a>
+          <a href="#en-security">Security and plugins</a>
+          <a href="#en-commands">Fast start</a>
+        </nav>
+      </aside>
+
+      <article class="article">
+        <div class="lang-panel active" data-panel="zh">
+          <section class="section">
+            <p class="lead">Hermes Agent v0.13.0 的关键词是 Tenacity。放到产品语境里，它想解决的不是“再加一个炫技工具”，而是 Agent 在真实使用里最容易掉链子的地方：任务变长、入口变多、中途会断、状态要接得上。</p>
+          </section>
+
+          <section class="section" id="zh-quick">
+            <h2>先看结论：这次最值得关注的 8 个变化</h2>
+            <div class="highlight-grid">
+              <div class="feature-card"><span class="tag">Durability</span><strong>Kanban 多 Agent 看板</strong><p>把任务变成可追踪、可恢复、可交接的持久队列。</p></div>
+              <div class="feature-card"><span class="tag">Goals</span><strong><code>/goal</code> 持久目标</strong><p>让 Hermes 跨轮次继续推进一个目标，不用你反复说“继续”。</p></div>
+              <div class="feature-card"><span class="tag">Gateway</span><strong>Gateway 自动恢复</strong><p>网关重启、更新或中断后，尽量恢复被打断的会话和路由。</p></div>
+              <div class="feature-card"><span class="tag">Cron</span><strong><code>no_agent</code> 模式</strong><p>定时脚本可以不调用 LLM，零 token 做监控告警。</p></div>
+              <div class="feature-card"><span class="tag">Video</span><strong><code>video_analyze</code></strong><p>把视频分析纳入 Agent 工具链，适合产品 demo、教程、会议片段。</p></div>
+              <div class="feature-card"><span class="tag">Voice</span><strong>xAI Custom Voices</strong><p>TTS 支持 xAI 自定义声音和 voice cloning。</p></div>
+              <div class="feature-card"><span class="tag">Platform</span><strong>Google Chat</strong><p>Google Chat 成为 Hermes 的第 20 个 messaging platform。</p></div>
+              <div class="feature-card"><span class="tag">Extensibility</span><strong>安全和插件化增强</strong><p>密钥脱敏默认开启，模型 provider 可以用插件方式扩展。</p></div>
+            </div>
+          </section>
+
+          <section class="section" id="zh-kanban">
+            <h2>1. Kanban：把多 Agent 协作变成一块可持续的任务板</h2>
+            <p>Kanban 是这次最重要的能力之一。以前你让 Agent 拆任务，很多时候是在一次对话里临时派生一个子任务。它更像函数调用：发出去，等结果，失败了就失败了。</p>
+            <p>v0.13.0 的 Kanban 更像一个持久工作队列。任务、状态、评论、依赖、worker 日志都会落在本地数据库和工作区里。一个 worker 崩了，可以 reclaim；任务没做完退出，会自动 block；多次失败可以触发 retry 上限；长任务可以 heartbeat。</p>
+            <div class="command"><div class="command-label">初始化并启动 dispatcher</div><pre><code>hermes kanban init
+hermes gateway start</code></pre></div>
+            <div class="command"><div class="command-label">创建任务</div><pre><code>hermes kanban create "研究 Hermes v0.13.0 的所有更新" \
+  --assignee researcher \
+  --workspace scratch \
+  --max-retries 3</code></pre></div>
+            <div class="command"><div class="command-label">创建多项目看板</div><pre><code>hermes kanban boards create launch-research \
+  --name "Launch Research" \
+  --description "Hermes v0.13.0 article workflow" \
+  --switch</code></pre></div>
+            <div class="command"><div class="command-label">查看任务状态</div><pre><code>hermes kanban list
+hermes kanban show &lt;task_id&gt;
+hermes kanban watch
+hermes kanban runs &lt;task_id&gt;
+hermes kanban log &lt;task_id&gt;</code></pre></div>
+            <p>如果你在聊天界面或消息平台里，也可以直接用 slash command：</p>
+            <div class="command"><div class="command-label">聊天里驱动 Kanban</div><pre><code>/kanban list
+/kanban create "写一篇 v0.13.0 更新文章" --assignee writer
+/kanban comment t_abcd "重点写使用方法，不要只复述 release note"
+/kanban dispatch --max 3</code></pre></div>
+            <div class="note"><strong>不要把 Kanban 理解成 Jira 替代品。</strong><p>它更准确的定位是：Hermes 内部的多 Agent 工作队列。它解决的是 Agent 任务如何被拆分、恢复、交接和审计，不是完整团队项目管理系统。</p></div>
+          </section>
+
+          <section class="section" id="zh-goal">
+            <h2>2. <code>/goal</code>：再也不用一直说“继续”</h2>
+            <p><code>/goal</code> 让你给当前会话设定一个 standing goal。每轮结束后，Hermes 会用一个轻量 judge 判断目标是否完成；如果没完成，就自动把继续工作的话题送回同一个会话。</p>
+            <div class="command"><div class="command-label">设定一个持久目标</div><pre><code>/goal 修复当前项目所有失败测试，并确认 pytest 全部通过</code></pre></div>
+            <table>
+              <thead><tr><th>命令</th><th>作用</th></tr></thead>
+              <tbody>
+                <tr><td><code>/goal &lt;text&gt;</code></td><td>设定或替换当前 standing goal，并立即开始执行。</td></tr>
+                <tr><td><code>/goal status</code></td><td>查看当前目标、状态和已使用轮次。</td></tr>
+                <tr><td><code>/goal pause</code></td><td>暂停自动继续，但保留目标。</td></tr>
+                <tr><td><code>/goal resume</code></td><td>恢复自动继续，并重置轮次计数。</td></tr>
+                <tr><td><code>/goal clear</code></td><td>清除目标。</td></tr>
+              </tbody>
+            </table>
+            <div class="command"><div class="command-label">配置 goal 轮次预算</div><pre><code>goals:
+  max_turns: 20</code></pre></div>
+            <div class="command"><div class="command-label">为 goal judge 配辅助模型</div><pre><code>auxiliary:
+  goal_judge:
+    provider: openrouter
+    model: google/gemini-3-flash-preview</code></pre></div>
+            <p><code>/goal</code> 适合不会一轮完成的事，比如修完整个测试集、迁移一组文件、连续整理资料、补完一篇长文。它不是“永久记忆”，也不是完全自主规划系统；它的重点是让一个明确目标可以跨轮次保持。</p>
+          </section>
+
+          <section class="section" id="zh-cron">
+            <h2>3. Cron <code>no_agent</code>：定时任务不一定要叫醒 LLM</h2>
+            <p>很多自动化任务其实不需要 Agent 思考。比如内存过高就提醒、磁盘快满就报警、CI 失败就发一段日志。这类任务最适合 v0.13.0 的 script-only cron，也就是 <code>--no-agent</code>。</p>
+            <div class="command"><div class="command-label">创建一个脚本</div><pre><code>mkdir -p ~/.hermes/scripts
+
+cat &gt; ~/.hermes/scripts/disk-alert.sh &lt;&lt;'EOF'
+#!/usr/bin/env bash
+df -h / | awk 'NR &gt; 1 &amp;&amp; $5+0 &gt;= 90 { print "Disk " $5 " full on " $6 }'
+EOF
+
+chmod +x ~/.hermes/scripts/disk-alert.sh</code></pre></div>
+            <div class="command"><div class="command-label">创建 no-agent cron</div><pre><code>hermes cron create "*/15 * * * *" \
+  --no-agent \
+  --script disk-alert.sh \
+  --deliver telegram \
+  --name "disk-alert"</code></pre></div>
+            <p>脚本有 stdout，就把 stdout 发出去；stdout 为空，就静默。全程不调用模型。它的效果不是“更聪明”，而是更轻、更稳定、更便宜。</p>
+          </section>
+
+          <section class="section">
+            <h2>4. Gateway auto-resume 与 Checkpoints v2：中断后更容易接上</h2>
+            <p>v0.13.0 强化了会话和状态持久性。Gateway 在中途重启、<code>/update</code> 重启、源文件 reload 等情况下，会尝试在回来后恢复被打断的会话。</p>
+            <p>Checkpoints v2 则重写了状态持久化，强调 pruning、磁盘 guardrails，并减少旧版本中 orphan shadow repo 这类维护问题。</p>
+            <div class="command"><div class="command-label">查看 checkpoint 状态</div><pre><code>hermes checkpoints status
+hermes checkpoints prune</code></pre></div>
+          </section>
+
+          <section class="section" id="zh-media">
+            <h2>5. 视频与语音：让 Agent 看得懂更多输入，也能输出声音</h2>
+            <h3><code>video_analyze</code></h3>
+            <p>v0.13.0 新增了 <code>video_analyze</code> 工具，用于分析视频 URL 或本地视频文件。它需要视频能力模型，比如 Gemini 或其他兼容的多模态模型。</p>
+            <div class="command"><div class="command-label">启用 video toolset</div><pre><code>hermes -t video</code></pre></div>
+            <div class="command"><div class="command-label">视频分析提示词示例</div><pre><code>请分析 /absolute/path/demo.mp4。
+按时间线列出视频里展示的产品功能，并指出哪些片段适合剪成发布素材。</code></pre></div>
+            <h3>xAI Custom Voices</h3>
+            <p>TTS 这次支持 xAI Custom Voices，可以把 xAI Console 里创建的自定义 voice 用作 Hermes 的语音输出。</p>
+            <div class="command"><div class="command-label">配置 xAI TTS</div><pre><code>tts:
+  provider: xai
+  xai:
+    voice_id: "your_custom_voice_id"
+    language: "en"
+    sample_rate: 24000</code></pre></div>
+          </section>
+
+          <section class="section" id="zh-platform">
+            <h2>6. Google Chat 与 SearXNG：入口和搜索后端都更可配置</h2>
+            <h3>Google Chat</h3>
+            <p>Google Chat 是这次新增的消息平台。它使用 Cloud Pub/Sub pull subscription 接收入站事件，用 Chat REST API 发送回复。对 Google Workspace 用户来说，这意味着 Hermes 可以更自然地进入团队协作入口。</p>
+            <div class="command"><div class="command-label">安装 Google Chat extra</div><pre><code>pip install 'hermes-agent[google_chat]'</code></pre></div>
+            <div class="command"><div class="command-label">基础环境变量</div><pre><code>GOOGLE_CHAT_PROJECT_ID=my-chat-bot-123
+GOOGLE_CHAT_SUBSCRIPTION_NAME=projects/my-chat-bot-123/subscriptions/hermes-chat-events-sub
+GOOGLE_CHAT_SERVICE_ACCOUNT_JSON=/home/you/.hermes/google-chat-sa.json
+GOOGLE_CHAT_ALLOWED_USERS=you@yourdomain.com</code></pre></div>
+            <h3>SearXNG</h3>
+            <p>SearXNG 可以作为免费、自托管、无 API key 的搜索后端，但它只负责搜索，不负责网页正文抽取。推荐搭配方式是：SearXNG 负责搜索，Firecrawl、Tavily、Exa 或 Parallel 负责抽取。</p>
+            <div class="command"><div class="command-label">SearXNG 搜索加 Firecrawl 抽取</div><pre><code>web:
+  search_backend: "searxng"
+  extract_backend: "firecrawl"</code></pre></div>
+          </section>
+
+          <section class="section" id="zh-security">
+            <h2>7. 安全、Dashboard 与插件化：更像一个可管理的本地系统</h2>
+            <p>v0.13.0 的 security wave 关闭了多项高优先级问题。对长期运行 Gateway、接入聊天平台、启用 cron 和外部工具的人来说，这些更新尤其重要。</p>
+            <ul>
+              <li>Secret redaction 默认开启。</li>
+              <li><code>hermes debug share</code> 上传前会做脱敏。</li>
+              <li>WhatsApp 默认拒绝陌生人。</li>
+              <li>Discord role allowlist 变成 guild-scoped。</li>
+              <li>Slack、Telegram、Mattermost、Matrix、DingTalk 等平台增强 allowlist。</li>
+              <li>Cron 会扫描 assembled prompt，包括 skill content，降低 prompt injection 风险。</li>
+            </ul>
+            <div class="command"><div class="command-label">启动 Dashboard</div><pre><code>pip install 'hermes-agent[web,pty]'
+hermes dashboard</code></pre></div>
+            <div class="command"><div class="command-label">模型 provider 插件目录</div><pre><code>~/.hermes/plugins/model-providers/&lt;name&gt;/</code></pre></div>
+            <div class="note warning"><strong>安全改进不等于绝对安全。</strong><p>更准确的说法是：默认值更保守，更多高风险入口有了防护和限制。只要你把 Agent 接到消息平台、浏览器、MCP、cron 或文件系统，仍然应该认真维护 allowlist、权限边界和日志保留策略。</p></div>
+          </section>
+
+          <section class="section" id="zh-commands">
+            <h2>最短上手路径</h2>
+            <div class="command"><div class="command-label">1. 升级和检查</div><pre><code>hermes update -y
+hermes --version
+hermes doctor</code></pre></div>
+            <div class="command"><div class="command-label">2. 打开中文静态提示</div><pre><code>hermes config set display.language zh</code></pre></div>
+            <div class="command"><div class="command-label">3. 试一个 /goal</div><pre><code>/goal 整理当前项目 README，补充安装、更新和常见问题，并确认链接可用</code></pre></div>
+            <div class="command"><div class="command-label">4. 试 Kanban</div><pre><code>hermes kanban init
+hermes gateway start
+hermes kanban create "写一份项目改进建议" --assignee researcher --triage
+hermes kanban specify --all</code></pre></div>
+            <p>如果你只是想快速了解这次更新，优先看 Kanban、<code>/goal</code>、Google Chat 和 Cron <code>no_agent</code>。它们最能代表 v0.13.0 的方向：让 Hermes Agent 从一次对话工具，继续往可持续工作的 Agent 系统靠近。</p>
+          </section>
+
+          <section class="section">
+            <h2>参考来源</h2>
+            <ul class="refs">
+              <li><a href="https://x.com/NousResearch/status/2052493732205744303" target="_blank" rel="noopener noreferrer">Nous Research X 公告</a></li>
+              <li><a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.7" target="_blank" rel="noopener noreferrer">GitHub Release: Hermes Agent v0.13.0</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban" target="_blank" rel="noopener noreferrer">Kanban 文档</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/goals" target="_blank" rel="noopener noreferrer">Persistent Goals 文档</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/guides/cron-script-only" target="_blank" rel="noopener noreferrer">Script-Only Cron Jobs 文档</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search" target="_blank" rel="noopener noreferrer">Web Search &amp; Extract 文档</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/tts" target="_blank" rel="noopener noreferrer">Voice &amp; TTS 文档</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/google_chat" target="_blank" rel="noopener noreferrer">Google Chat 文档</a></li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="lang-panel" data-panel="en">
+          <section class="section">
+            <p class="lead">Hermes Agent v0.13.0 is called The Tenacity Release for a reason. The main story is not a single flashy tool. It is about the places where agents usually struggle in real use: long tasks, multiple entry points, interrupted runs, and state that needs to survive.</p>
+          </section>
+
+          <section class="section" id="en-quick">
+            <h2>The short version: 8 changes that matter most</h2>
+            <div class="highlight-grid">
+              <div class="feature-card"><span class="tag">Durability</span><strong>Multi-agent Kanban</strong><p>A durable board for tasks that need tracking, recovery, handoff, and retry history.</p></div>
+              <div class="feature-card"><span class="tag">Goals</span><strong>Persistent <code>/goal</code></strong><p>Hermes can keep working toward a standing objective across turns without repeated “continue” prompts.</p></div>
+              <div class="feature-card"><span class="tag">Gateway</span><strong>Auto-resume after restart</strong><p>Interrupted sessions and routing state are more likely to come back after gateway restarts or updates.</p></div>
+              <div class="feature-card"><span class="tag">Cron</span><strong><code>no_agent</code> mode</strong><p>Scheduled scripts can skip the LLM entirely and deliver stdout directly.</p></div>
+              <div class="feature-card"><span class="tag">Video</span><strong><code>video_analyze</code></strong><p>Video files and URLs can enter the agent workflow through video-capable multimodal models.</p></div>
+              <div class="feature-card"><span class="tag">Voice</span><strong>xAI Custom Voices</strong><p>TTS can use custom xAI voices, including voice cloning support.</p></div>
+              <div class="feature-card"><span class="tag">Platform</span><strong>Google Chat</strong><p>Google Chat becomes Hermes Agent’s 20th messaging platform.</p></div>
+              <div class="feature-card"><span class="tag">Extensibility</span><strong>Security and provider plugins</strong><p>Secret redaction is on by default, and model providers can be added as plugins.</p></div>
+            </div>
+          </section>
+
+          <section class="section" id="en-kanban">
+            <h2>1. Kanban turns multi-agent work into a durable board</h2>
+            <p>Kanban is one of the most important additions in this release. Traditional delegation behaves more like a function call: spawn a subtask, wait for the result, and lose most of the trail if things fail.</p>
+            <p>The new Kanban system is closer to a durable work queue. Tasks, status, comments, dependencies, worker logs, retry history, and handoff metadata live outside a single conversation context. A crashed worker can be reclaimed, incomplete exits can be blocked, and long tasks can heartbeat.</p>
+            <div class="command"><div class="command-label">Initialize and start dispatcher</div><pre><code>hermes kanban init
+hermes gateway start</code></pre></div>
+            <div class="command"><div class="command-label">Create a task</div><pre><code>hermes kanban create "Research every Hermes v0.13.0 update" \
+  --assignee researcher \
+  --workspace scratch \
+  --max-retries 3</code></pre></div>
+            <div class="command"><div class="command-label">Create a project board</div><pre><code>hermes kanban boards create launch-research \
+  --name "Launch Research" \
+  --description "Hermes v0.13.0 article workflow" \
+  --switch</code></pre></div>
+            <div class="command"><div class="command-label">Inspect task state</div><pre><code>hermes kanban list
+hermes kanban show &lt;task_id&gt;
+hermes kanban watch
+hermes kanban runs &lt;task_id&gt;
+hermes kanban log &lt;task_id&gt;</code></pre></div>
+            <p>The same surface works from chat and messaging platforms through slash commands:</p>
+            <div class="command"><div class="command-label">Drive Kanban from chat</div><pre><code>/kanban list
+/kanban create "Write a v0.13.0 update article" --assignee writer
+/kanban comment t_abcd "Focus on usage, not just release-note summary"
+/kanban dispatch --max 3</code></pre></div>
+            <div class="note"><strong>Do not read Kanban as a Jira replacement.</strong><p>Its better framing is an internal Hermes work queue for multi-agent tasks: decomposition, recovery, handoff, and audit trail.</p></div>
+          </section>
+
+          <section class="section" id="en-goal">
+            <h2>2. <code>/goal</code> removes the need to keep saying “continue”</h2>
+            <p><code>/goal</code> lets you set a standing objective for the current session. After each turn, Hermes uses a lightweight judge to decide whether the goal is complete. If not, it feeds a continuation prompt back into the same session.</p>
+            <div class="command"><div class="command-label">Set a persistent goal</div><pre><code>/goal Fix every failing test in the current project and verify pytest passes</code></pre></div>
+            <table>
+              <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+              <tbody>
+                <tr><td><code>/goal &lt;text&gt;</code></td><td>Set or replace the standing goal and start immediately.</td></tr>
+                <tr><td><code>/goal status</code></td><td>Show the current goal, status, and turns used.</td></tr>
+                <tr><td><code>/goal pause</code></td><td>Pause auto-continuation while keeping the goal.</td></tr>
+                <tr><td><code>/goal resume</code></td><td>Resume the loop and reset the turn counter.</td></tr>
+                <tr><td><code>/goal clear</code></td><td>Clear the goal.</td></tr>
+              </tbody>
+            </table>
+            <div class="command"><div class="command-label">Configure the turn budget</div><pre><code>goals:
+  max_turns: 20</code></pre></div>
+            <div class="command"><div class="command-label">Route the judge to a cheaper auxiliary model</div><pre><code>auxiliary:
+  goal_judge:
+    provider: openrouter
+    model: google/gemini-3-flash-preview</code></pre></div>
+            <p>Use it for tasks that should not stop after one turn: fixing a full test suite, migrating a set of files, iterating on research, or finishing a long-form deliverable. It is not permanent memory or a fully autonomous planning system; it is a way to keep a clear objective alive across turns.</p>
+          </section>
+
+          <section class="section" id="en-cron">
+            <h2>3. Cron <code>no_agent</code>: scheduled jobs do not always need an LLM</h2>
+            <p>Some automation does not require reasoning. Memory alerts, disk alerts, CI pings, and API polling often only need a script. That is exactly what script-only cron mode is for.</p>
+            <div class="command"><div class="command-label">Create a script</div><pre><code>mkdir -p ~/.hermes/scripts
+
+cat &gt; ~/.hermes/scripts/disk-alert.sh &lt;&lt;'EOF'
+#!/usr/bin/env bash
+df -h / | awk 'NR &gt; 1 &amp;&amp; $5+0 &gt;= 90 { print "Disk " $5 " full on " $6 }'
+EOF
+
+chmod +x ~/.hermes/scripts/disk-alert.sh</code></pre></div>
+            <div class="command"><div class="command-label">Create a no-agent cron job</div><pre><code>hermes cron create "*/15 * * * *" \
+  --no-agent \
+  --script disk-alert.sh \
+  --deliver telegram \
+  --name "disk-alert"</code></pre></div>
+            <p>If the script prints stdout, Hermes delivers it. If stdout is empty, the run stays silent. No model call is made.</p>
+          </section>
+
+          <section class="section">
+            <h2>4. Gateway auto-resume and Checkpoints v2 make interruptions easier to recover from</h2>
+            <p>v0.13.0 strengthens session and state durability. When the gateway restarts during a run, after <code>/update</code>, or after source reloads, Hermes is better at resuming the interrupted conversation and routing state.</p>
+            <p>Checkpoints v2 rewrites state persistence with real pruning and disk guardrails, reducing maintenance issues such as orphan shadow repositories.</p>
+            <div class="command"><div class="command-label">Inspect checkpoint state</div><pre><code>hermes checkpoints status
+hermes checkpoints prune</code></pre></div>
+          </section>
+
+          <section class="section" id="en-media">
+            <h2>5. Video and voice: richer inputs, richer outputs</h2>
+            <h3><code>video_analyze</code></h3>
+            <p>The new <code>video_analyze</code> tool analyzes video URLs or local files through video-capable multimodal models such as Gemini or compatible providers.</p>
+            <div class="command"><div class="command-label">Enable the video toolset</div><pre><code>hermes -t video</code></pre></div>
+            <div class="command"><div class="command-label">Example video prompt</div><pre><code>Analyze /absolute/path/demo.mp4.
+List the product features shown in timeline order and identify clips suitable for launch material.</code></pre></div>
+            <h3>xAI Custom Voices</h3>
+            <p>TTS now supports xAI Custom Voices, so a custom voice created in the xAI Console can be used for Hermes speech output.</p>
+            <div class="command"><div class="command-label">Configure xAI TTS</div><pre><code>tts:
+  provider: xai
+  xai:
+    voice_id: "your_custom_voice_id"
+    language: "en"
+    sample_rate: 24000</code></pre></div>
+          </section>
+
+          <section class="section" id="en-platform">
+            <h2>6. Google Chat and SearXNG expand where Hermes can work</h2>
+            <h3>Google Chat</h3>
+            <p>Google Chat is the new messaging platform in this release. It uses Cloud Pub/Sub pull subscriptions for inbound events and the Chat REST API for replies, making it useful for Google Workspace environments.</p>
+            <div class="command"><div class="command-label">Install the Google Chat extra</div><pre><code>pip install 'hermes-agent[google_chat]'</code></pre></div>
+            <div class="command"><div class="command-label">Basic environment variables</div><pre><code>GOOGLE_CHAT_PROJECT_ID=my-chat-bot-123
+GOOGLE_CHAT_SUBSCRIPTION_NAME=projects/my-chat-bot-123/subscriptions/hermes-chat-events-sub
+GOOGLE_CHAT_SERVICE_ACCOUNT_JSON=/home/you/.hermes/google-chat-sa.json
+GOOGLE_CHAT_ALLOWED_USERS=you@yourdomain.com</code></pre></div>
+            <h3>SearXNG</h3>
+            <p>SearXNG can act as a free, self-hosted, no-key search backend. It is search-only, so pair it with a separate extraction provider such as Firecrawl, Tavily, Exa, or Parallel.</p>
+            <div class="command"><div class="command-label">Use SearXNG for search and Firecrawl for extract</div><pre><code>web:
+  search_backend: "searxng"
+  extract_backend: "firecrawl"</code></pre></div>
+          </section>
+
+          <section class="section" id="en-security">
+            <h2>7. Security, Dashboard, and plugins make Hermes more manageable</h2>
+            <p>The security wave in v0.13.0 closes multiple high-priority issues. These matter most if you run Gateway long-term, connect messaging platforms, enable cron, or expose external tools.</p>
+            <ul>
+              <li>Secret redaction is on by default.</li>
+              <li><code>hermes debug share</code> redacts before upload.</li>
+              <li>WhatsApp rejects strangers by default.</li>
+              <li>Discord role allowlists are scoped by guild.</li>
+              <li>Slack, Telegram, Mattermost, Matrix, and DingTalk gain stronger allowlist controls.</li>
+              <li>Cron scans assembled prompts, including skill content, for prompt injection risk.</li>
+            </ul>
+            <div class="command"><div class="command-label">Start Dashboard</div><pre><code>pip install 'hermes-agent[web,pty]'
+hermes dashboard</code></pre></div>
+            <div class="command"><div class="command-label">Model provider plugin directory</div><pre><code>~/.hermes/plugins/model-providers/&lt;name&gt;/</code></pre></div>
+            <div class="note warning"><strong>Security improvements do not mean absolute safety.</strong><p>The right reading is that defaults are more conservative and more high-risk surfaces have guardrails. You should still maintain allowlists, permission boundaries, and log retention policies.</p></div>
+          </section>
+
+          <section class="section" id="en-commands">
+            <h2>Fast start path</h2>
+            <div class="command"><div class="command-label">1. Update and check</div><pre><code>hermes update -y
+hermes --version
+hermes doctor</code></pre></div>
+            <div class="command"><div class="command-label">2. Enable Chinese static UI messages</div><pre><code>hermes config set display.language zh</code></pre></div>
+            <div class="command"><div class="command-label">3. Try /goal</div><pre><code>/goal Clean up the current project README, add install/update/FAQ sections, and verify links work</code></pre></div>
+            <div class="command"><div class="command-label">4. Try Kanban</div><pre><code>hermes kanban init
+hermes gateway start
+hermes kanban create "Write a project improvement brief" --assignee researcher --triage
+hermes kanban specify --all</code></pre></div>
+            <p>If you only try a few things, start with Kanban, <code>/goal</code>, Google Chat, and Cron <code>no_agent</code>. Together they best represent the direction of v0.13.0: moving Hermes Agent from a single conversation tool toward a system that can sustain work.</p>
+          </section>
+
+          <section class="section">
+            <h2>Sources</h2>
+            <ul class="refs">
+              <li><a href="https://x.com/NousResearch/status/2052493732205744303" target="_blank" rel="noopener noreferrer">Nous Research X announcement</a></li>
+              <li><a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.7" target="_blank" rel="noopener noreferrer">GitHub Release: Hermes Agent v0.13.0</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban" target="_blank" rel="noopener noreferrer">Kanban documentation</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/goals" target="_blank" rel="noopener noreferrer">Persistent Goals documentation</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/guides/cron-script-only" target="_blank" rel="noopener noreferrer">Script-Only Cron Jobs documentation</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search" target="_blank" rel="noopener noreferrer">Web Search &amp; Extract documentation</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/tts" target="_blank" rel="noopener noreferrer">Voice &amp; TTS documentation</a></li>
+              <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/google_chat" target="_blank" rel="noopener noreferrer">Google Chat documentation</a></li>
+            </ul>
+          </section>
+        </div>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <div>Collection and edit time: 2026-05-08 PDT. Built as a local single-file HTML article.</div>
+      <div>Tools used: Codex, Hermes media profile, GitHub CLI, local Hermes v0.13.0 docs and CLI, official X/GitHub/doc sources.</div>
+    </footer>
+  </main>
+
+  <script>
+    const buttons = Array.from(document.querySelectorAll(".lang-switch button"));
+    const panels = Array.from(document.querySelectorAll(".lang-panel"));
+    const tocTitle = document.querySelector("[data-i18n='tocTitle']");
+
+    function setLanguage(lang) {
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      localStorage.setItem("hermesArticleLang", lang);
+      buttons.forEach((button) => {
+        const active = button.dataset.lang === lang;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.panel === lang);
+      });
+      if (tocTitle) {
+        tocTitle.textContent = lang === "zh" ? "目录" : "Contents";
+      }
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    setLanguage(localStorage.getItem("hermesArticleLang") || "zh");
+  </script>
+</body>
+</html>

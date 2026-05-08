@@ -16,6 +16,11 @@ Then visit <http://localhost:8000>.
 
 This repository is ready to publish with GitHub Pages from the `main` branch root.
 
+Published pages:
+
+- Field guide: <https://fstrategy.github.io/hermes-field-guide/>
+- Hermes Agent v0.13.0 WeChat article: <https://fstrategy.github.io/hermes-field-guide/hermes-agent-v013-wechat-article.html>
+
 ## License
 
 MIT
